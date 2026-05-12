@@ -13,11 +13,11 @@
 
   --color-purple: #5028A0;
   --color-purple-2: #7A4FD9;
-  --color-gold: #B98832;
-  --color-burgundy: #5F1F2C;
-  --color-teal: #2E5E62;
-  --color-olive: #4A5238;
-  --color-rust: #8C3A1F;
+  --color-gold: #8C6A2A;
+  --color-burgundy: #4A1A24;
+  --color-teal: #244B4F;
+  --color-olive: #3B4230;
+  --color-rust: #6E2E18;
 
   --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;

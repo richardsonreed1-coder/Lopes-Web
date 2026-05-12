@@ -135,3 +135,21 @@ export const epochs = [
   { year: "2017", label: "Lopes Capital founded" },
   { year: "5", label: "Operating categories today" },
 ];
+
+export type Operator = {
+  num: string;
+  name: string;
+  category: string;
+  era: string;
+};
+
+export const operators: Operator[] = [
+  { num: "#001", name: "Grand Canyon University", category: "Education", era: "2003 — 2018" },
+  { num: "#017", name: "Storage Portfolio", category: "Real Estate", era: "2019 —" },
+  { num: "#021", name: "Martone Datacenter", category: "Real Estate", era: "2021 —" },
+  { num: "#023", name: "Neuro Brand Hub", category: "Healthcare", era: "2022 —" },
+  { num: "#028", name: "K–12 Platform", category: "Education", era: "2023 —" },
+  { num: "#031", name: "Family Advisory", category: "Education", era: "2024 —" },
+  { num: "#034", name: "Creator DTC Holdco", category: "Media & Consumer", era: "2024 —" },
+  { num: "#037", name: "Signals Engine", category: "Capital Markets", era: "2025 —" },
+];

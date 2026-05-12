@@ -1,19 +1,35 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PixelIntro } from "@/components/pixel-intro";
 import { TopNav } from "@/components/top-nav";
 import { SideRail } from "@/components/side-rail";
 import { LedgerStack } from "@/components/ledger-stack";
+import { OperatorRail } from "@/components/operator-rail";
 import { SiteFooter } from "@/components/site-footer";
 import { epochs, letters } from "@/lib/content";
 
+const INTRO_FLAG = "lopes-intro-seen";
+
 export default function Home() {
-  const [introDone, setIntroDone] = useState(false);
+  const [introDone, setIntroDone] = useState(true);
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    setHydrated(true);
+    if (sessionStorage.getItem(INTRO_FLAG) !== "1") {
+      setIntroDone(false);
+    }
+  }, []);
+
+  const finishIntro = () => {
+    sessionStorage.setItem(INTRO_FLAG, "1");
+    setIntroDone(true);
+  };
 
   return (
     <>
-      {!introDone && <PixelIntro onComplete={() => setIntroDone(true)} />}
+      {hydrated && !introDone && <PixelIntro onComplete={finishIntro} />}
 
       <TopNav />
       <SideRail />
@@ -26,15 +42,23 @@ export default function Home() {
         {/* HERO — LEDGER STACK */}
         <section
           id="categories"
-          className="min-h-screen flex items-center justify-center px-6 md:px-10 pt-32 pb-24 relative"
+          className="min-h-screen flex flex-col items-center justify-center px-6 md:px-10 pt-32 pb-24 relative"
         >
+          <div className="w-full max-w-[680px] mx-auto mb-12 md:mb-16">
+            <div className="font-mono text-[11px] tracking-[0.18em] uppercase text-purple-2 mb-5">
+              Lopes Capital · Est. 2017
+            </div>
+            <h1 className="font-display font-normal text-[clamp(40px,6vw,72px)] leading-[0.98] tracking-[-0.025em]">
+              Operators first.{" "}
+              <em className="italic text-purple-2 font-medium">Allocators second.</em>
+            </h1>
+          </div>
           <LedgerStack />
           <div className="absolute left-6 md:left-10 right-6 md:right-10 bottom-10 flex flex-col md:flex-row md:justify-between items-start md:items-end gap-4 font-mono text-[11px] text-paper-mute uppercase tracking-[0.1em]">
             <span className="font-sans italic normal-case tracking-normal text-[13px] text-paper-dim max-w-[34ch] leading-[1.5]">
-              A Scottsdale multi-family office. Operator-built. Capital-deployed.
-              Six volumes, one ledger.
+              A Scottsdale multi-family office. Six volumes, one ledger.
             </span>
-            <span>EST. 2017 · SCOTTSDALE</span>
+            <span>SCOTTSDALE · ARIZONA</span>
           </div>
         </section>
 
@@ -77,13 +101,16 @@ export default function Home() {
           </div>
         </section>
 
+        {/* OPERATORS */}
+        <OperatorRail />
+
         {/* LETTERS */}
         <section
           id="letters"
           className="px-6 md:px-10 py-24 md:py-32 max-w-[920px] mx-auto"
         >
           <div className="font-mono text-[11px] tracking-[0.18em] uppercase text-purple-2 mb-8">
-            02 / Letters
+            03 / Letters
           </div>
           <h2 className="font-display font-normal text-[clamp(36px,5.5vw,64px)] leading-[1.05] tracking-[-0.02em] mb-10">
             Annual notes,{" "}

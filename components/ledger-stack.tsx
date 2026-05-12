@@ -6,7 +6,7 @@ import { ledgers } from "@/lib/content";
 
 const COLOR_CLASSES: Record<LedgerColor, { bg: string; text: string; border: string }> = {
   purple: { bg: "bg-purple", text: "text-paper", border: "border-paper/30" },
-  gold: { bg: "bg-gold", text: "text-ink", border: "border-ink/30" },
+  gold: { bg: "bg-gold", text: "text-paper", border: "border-paper/30" },
   burgundy: { bg: "bg-burgundy", text: "text-paper", border: "border-paper/30" },
   teal: { bg: "bg-teal", text: "text-paper", border: "border-paper/30" },
   olive: { bg: "bg-olive", text: "text-paper", border: "border-paper/30" },

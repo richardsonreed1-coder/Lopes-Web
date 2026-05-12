@@ -31,6 +31,9 @@ export function TopNav() {
         <a href="#thesis" className="hover:text-paper transition-colors">
           Thesis
         </a>
+        <a href="#operators" className="hover:text-paper transition-colors">
+          Operators
+        </a>
         <a href="#letters" className="hover:text-paper transition-colors">
           Letters
         </a>

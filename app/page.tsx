@@ -1,33 +1,10 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { PixelIntro } from "@/components/pixel-intro";
 import { LedgerStack } from "@/components/ledger-stack";
 import { OperatorRail } from "@/components/operator-rail";
 import { epochs, letters } from "@/lib/content";
 
-const INTRO_FLAG = "lopes-intro-seen";
-
 export default function Home() {
-  const [introDone, setIntroDone] = useState(true);
-  const [hydrated, setHydrated] = useState(false);
-
-  useEffect(() => {
-    setHydrated(true);
-    if (sessionStorage.getItem(INTRO_FLAG) !== "1") {
-      setIntroDone(false);
-    }
-  }, []);
-
-  const finishIntro = () => {
-    sessionStorage.setItem(INTRO_FLAG, "1");
-    setIntroDone(true);
-  };
-
   return (
     <>
-      {hydrated && !introDone && <PixelIntro onComplete={finishIntro} />}
-
       <main className="relative">
         {/* HERO — LEDGER STACK */}
         <section

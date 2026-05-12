@@ -2,11 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { PixelIntro } from "@/components/pixel-intro";
-import { TopNav } from "@/components/top-nav";
-import { SideRail } from "@/components/side-rail";
 import { LedgerStack } from "@/components/ledger-stack";
 import { OperatorRail } from "@/components/operator-rail";
-import { SiteFooter } from "@/components/site-footer";
 import { epochs, letters } from "@/lib/content";
 
 const INTRO_FLAG = "lopes-intro-seen";
@@ -30,13 +27,6 @@ export default function Home() {
   return (
     <>
       {hydrated && !introDone && <PixelIntro onComplete={finishIntro} />}
-
-      <TopNav />
-      <SideRail />
-
-      <div className="hidden md:block fixed bottom-6 left-6 z-40 font-mono text-[11px] text-paper-faint">
-        SCOTTSDALE · AZ
-      </div>
 
       <main className="relative">
         {/* HERO — LEDGER STACK */}
@@ -148,8 +138,6 @@ export default function Home() {
             ))}
           </div>
         </section>
-
-        <SiteFooter />
       </main>
     </>
   );

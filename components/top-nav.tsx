@@ -25,18 +25,18 @@ export function TopNav() {
         </div>
       </Link>
       <div className="hidden md:flex gap-7 font-sans text-[13px] text-paper-dim">
-        <a href="#categories" className="hover:text-paper transition-colors">
+        <Link href="/#categories" className="hover:text-paper transition-colors">
           Categories
-        </a>
-        <a href="#thesis" className="hover:text-paper transition-colors">
+        </Link>
+        <Link href="/#thesis" className="hover:text-paper transition-colors">
           Thesis
-        </a>
-        <a href="#operators" className="hover:text-paper transition-colors">
+        </Link>
+        <Link href="/#operators" className="hover:text-paper transition-colors">
           Operators
-        </a>
-        <a href="#letters" className="hover:text-paper transition-colors">
+        </Link>
+        <Link href="/#letters" className="hover:text-paper transition-colors">
           Letters
-        </a>
+        </Link>
         <a href="#contact" className="hover:text-paper transition-colors">
           Contact
         </a>

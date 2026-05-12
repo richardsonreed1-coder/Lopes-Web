@@ -2,6 +2,8 @@ export type LedgerColor = "purple" | "gold" | "burgundy" | "teal" | "olive" | "p
 
 export type Ledger = {
   vol: string;
+  slug: string;
+  href: string;
   title: string;
   emphasis: string;
   meta: string;
@@ -10,9 +12,24 @@ export type Ledger = {
   color: LedgerColor;
 };
 
+export const CATEGORY_SLUGS = [
+  "capital-markets",
+  "real-estate",
+  "education",
+  "healthcare",
+  "media-consumer",
+] as const;
+export type CategorySlug = (typeof CATEGORY_SLUGS)[number];
+
+export function isCategorySlug(s: string): s is CategorySlug {
+  return (CATEGORY_SLUGS as readonly string[]).includes(s);
+}
+
 export const ledgers: Ledger[] = [
   {
     vol: "VOL.01",
+    slug: "capital-markets",
+    href: "/capital-markets",
     title: "Capital Markets",
     emphasis: "signals, not noise",
     meta: "DISCRETIONARY",
@@ -23,6 +40,8 @@ export const ledgers: Ledger[] = [
   },
   {
     vol: "VOL.02",
+    slug: "real-estate",
+    href: "/real-estate",
     title: "Real Estate",
     emphasis: "hard assets, harder underwriting",
     meta: "STORAGE · DATACENTER · LAND",
@@ -33,6 +52,8 @@ export const ledgers: Ledger[] = [
   },
   {
     vol: "VOL.03",
+    slug: "education",
+    href: "/education",
     title: "Education",
     emphasis: "where it started",
     meta: "K–12 · BRAND · ADVISORY",
@@ -43,6 +64,8 @@ export const ledgers: Ledger[] = [
   },
   {
     vol: "VOL.04",
+    slug: "healthcare",
+    href: "/healthcare",
     title: "Healthcare",
     emphasis: "neuro hub, DTC spokes",
     meta: "NEURODEVELOPMENTAL",
@@ -53,6 +76,8 @@ export const ledgers: Ledger[] = [
   },
   {
     vol: "VOL.05",
+    slug: "media-consumer",
+    href: "/media-consumer",
     title: "Media & Consumer",
     emphasis: "creators, owned infrastructure",
     meta: "DTC PORTFOLIO",
@@ -63,6 +88,8 @@ export const ledgers: Ledger[] = [
   },
   {
     vol: "VOL.06",
+    slug: "letters",
+    href: "/#letters",
     title: "Letters",
     emphasis: "annual notes, on the record",
     meta: "2018 — 2025",
@@ -72,6 +99,22 @@ export const ledgers: Ledger[] = [
     color: "paper",
   },
 ];
+
+export function ledgerBySlug(slug: string): Ledger | undefined {
+  return ledgers.find((l) => l.slug === slug);
+}
+
+const CATEGORY_TITLE_TO_SLUG: Record<string, CategorySlug> = {
+  "Capital Markets": "capital-markets",
+  "Real Estate": "real-estate",
+  Education: "education",
+  Healthcare: "healthcare",
+  "Media & Consumer": "media-consumer",
+};
+
+export function operatorsForCategory(slug: CategorySlug): Operator[] {
+  return operators.filter((op) => CATEGORY_TITLE_TO_SLUG[op.category] === slug);
+}
 
 export type Letter = {
   year: string;

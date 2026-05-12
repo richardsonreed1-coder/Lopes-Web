@@ -1,0 +1,137 @@
+export type LedgerColor = "purple" | "gold" | "burgundy" | "teal" | "olive" | "paper";
+
+export type Ledger = {
+  vol: string;
+  title: string;
+  emphasis: string;
+  meta: string;
+  body: string;
+  positions: string[];
+  color: LedgerColor;
+};
+
+export const ledgers: Ledger[] = [
+  {
+    vol: "VOL.01",
+    title: "Capital Markets",
+    emphasis: "signals, not noise",
+    meta: "DISCRETIONARY",
+    body:
+      "A discretionary platform pairing private-markets activity with a public-markets and event-driven strategy. A proprietary research stack runs every signal we trade — built by the same people who run it.",
+    positions: ["Private", "Public", "Event-driven", "Signals"],
+    color: "purple",
+  },
+  {
+    vol: "VOL.02",
+    title: "Real Estate",
+    emphasis: "hard assets, harder underwriting",
+    meta: "STORAGE · DATACENTER · LAND",
+    body:
+      "A self-storage portfolio anchors the hard-assets sleeve, with datacenter exposure via the Martone partnership and selective land plays in growth corridors. We pencil deals like operators because we are.",
+    positions: ["Storage", "Datacenter", "Landco", "Martone"],
+    color: "gold",
+  },
+  {
+    vol: "VOL.03",
+    title: "Education",
+    emphasis: "where it started",
+    meta: "K–12 · BRAND · ADVISORY",
+    body:
+      "A multi-property platform spanning movement-level brand work, K–12 platform technology, consumer-facing family advisory, and selective client engagements with adjacent operators. The lane we know cold.",
+    positions: ["GCU lineage", "K–12", "Brand", "Family advisory"],
+    color: "burgundy",
+  },
+  {
+    vol: "VOL.04",
+    title: "Healthcare",
+    emphasis: "neuro hub, DTC spokes",
+    meta: "NEURODEVELOPMENTAL",
+    body:
+      "A specialist-led brand ecosystem in the neurodevelopmental space — a hub with multiple consumer and clinical sub-properties and a direct-to-consumer acquisition funnel feeding it.",
+    positions: ["Neuro hub", "Clinical", "DTC funnel"],
+    color: "teal",
+  },
+  {
+    vol: "VOL.05",
+    title: "Media & Consumer",
+    emphasis: "creators, owned infrastructure",
+    meta: "DTC PORTFOLIO",
+    body:
+      "A small portfolio of creator-led DTC properties operated under the holding company, with shared e-commerce and content infrastructure built once, reused everywhere.",
+    positions: ["Creator", "E-commerce", "Content"],
+    color: "olive",
+  },
+  {
+    vol: "VOL.06",
+    title: "Letters",
+    emphasis: "annual notes, on the record",
+    meta: "2018 — 2025",
+    body:
+      "Every year, one letter, signed. Theses, mistakes, and what we did about both. The archive lives below.",
+    positions: ["2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025"],
+    color: "paper",
+  },
+];
+
+export type Letter = {
+  year: string;
+  title: string;
+  emphasis?: string;
+  length: string;
+};
+
+export const letters: Letter[] = [
+  {
+    year: "2025",
+    title: "Storage at scale:",
+    emphasis: "what the consolidators got right, and where they're still vulnerable",
+    length: "14 MIN",
+  },
+  {
+    year: "2024",
+    title: "Operator economics:",
+    emphasis: "why we're underwriting management teams, not assets",
+    length: "11 MIN",
+  },
+  {
+    year: "2023",
+    title: "The neuro thesis:",
+    emphasis: "a DTC funnel, a clinical spine, and the patience to wait",
+    length: "19 MIN",
+  },
+  {
+    year: "2022",
+    title: "A datacenter is a real-estate trade with a power-grid covenant",
+    length: "9 MIN",
+  },
+  {
+    year: "2021",
+    title: "Three things we got wrong in 2020 —",
+    emphasis: "and the call that paid for all of them",
+    length: "12 MIN",
+  },
+  {
+    year: "2020",
+    title: "Recession-resistant cash flow:",
+    emphasis: "self-storage as a defensive growth asset",
+    length: "16 MIN",
+  },
+  {
+    year: "2019",
+    title: "Year one:",
+    emphasis: "what a family office actually does when nobody's watching",
+    length: "8 MIN",
+  },
+  {
+    year: "2018",
+    title: "After the exit",
+    length: "6 MIN",
+  },
+];
+
+export const epochs = [
+  { year: "2003", label: "Grand Canyon University acquired" },
+  { year: "2018", label: "Exit as #1 private Christian university" },
+  { year: "2017", label: "Lopes Capital founded" },
+  { year: "5", label: "Operating categories today" },
+];

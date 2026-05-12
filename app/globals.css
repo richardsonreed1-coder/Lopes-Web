@@ -1,0 +1,40 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #0E0F12;
+  --color-ink-2: #1A1B22;
+  --color-paper: #F4EFE3;
+  --color-paper-warm: #EDE5D2;
+  --color-paper-dim: rgba(244, 239, 227, 0.7);
+  --color-paper-mute: rgba(244, 239, 227, 0.55);
+  --color-paper-faint: rgba(244, 239, 227, 0.4);
+  --color-rule: rgba(244, 239, 227, 0.16);
+  --color-rule-soft: rgba(244, 239, 227, 0.08);
+
+  --color-purple: #5028A0;
+  --color-purple-2: #7A4FD9;
+  --color-gold: #B98832;
+  --color-burgundy: #5F1F2C;
+  --color-teal: #2E5E62;
+  --color-olive: #4A5238;
+  --color-rust: #8C3A1F;
+
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+html, body {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html { overflow-x: hidden; }
+
+::selection {
+  background: var(--color-purple-2);
+  color: var(--color-paper);
+}

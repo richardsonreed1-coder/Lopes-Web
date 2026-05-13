@@ -4,11 +4,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ConfettiBg } from "@/components/confetti-bg";
 
-const VARIANTS = [
-  { slug: "/", label: "A · Baseline" },
-  { slug: "/restrained", label: "B · Restrained" },
-  { slug: "/tetris", label: "C · Tetris" },
-  { slug: "/mark", label: "D · Mark" },
+type Variant = { slug: string; label: string; family: "main" | "mark" };
+
+const VARIANTS: Variant[] = [
+  { slug: "/", label: "A · Baseline", family: "main" },
+  { slug: "/restrained", label: "B · Restrained", family: "main" },
+  { slug: "/tetris", label: "C · Tetris", family: "main" },
+  { slug: "/mark", label: "D · Mark", family: "main" },
+  { slug: "/mark/curved", label: "D1 · Curved", family: "mark" },
+  { slug: "/mark/crest", label: "D2 · Crest", family: "mark" },
+  { slug: "/mark/hollow", label: "D3 · Hollow", family: "mark" },
 ];
 
 export function SignatureShell({
@@ -52,21 +57,27 @@ export function SignatureShell({
         </div>
       </nav>
 
-      <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-[60] flex gap-1 px-1.5 py-1 border border-white/[0.14] bg-black/70 backdrop-blur-sm font-mono text-[10px] tracking-[0.1em] uppercase">
-        {VARIANTS.map((v) => {
+      <div className="fixed bottom-5 left-1/2 -translate-x-1/2 z-[60] flex items-stretch gap-1 px-1.5 py-1 border border-white/[0.14] bg-black/70 backdrop-blur-sm font-mono text-[10px] tracking-[0.1em] uppercase max-w-[calc(100vw-2rem)] overflow-x-auto">
+        {VARIANTS.map((v, i) => {
           const active = v.slug === pathname;
+          const prev = VARIANTS[i - 1];
+          const showSeparator = prev && prev.family !== v.family;
           return (
-            <Link
-              key={v.slug}
-              href={v.slug}
-              className={`px-2.5 py-1.5 transition-colors ${
-                active
-                  ? "bg-[#7A4FD9] text-white"
-                  : "text-white/55 hover:text-white"
-              }`}
-            >
-              {v.label}
-            </Link>
+            <div key={v.slug} className="flex items-stretch gap-1">
+              {showSeparator && (
+                <div className="self-stretch w-px bg-white/[0.18] mx-1" />
+              )}
+              <Link
+                href={v.slug}
+                className={`px-2.5 py-1.5 transition-colors whitespace-nowrap ${
+                  active
+                    ? "bg-[#7A4FD9] text-white"
+                    : "text-white/55 hover:text-white"
+                }`}
+              >
+                {v.label}
+              </Link>
+            </div>
           );
         })}
       </div>

@@ -1,4 +1,5 @@
 import { operators } from "@/lib/content";
+import { TiltCard } from "@/components/tilt-card";
 
 export function OperatorRail() {
   return (
@@ -23,9 +24,14 @@ export function OperatorRail() {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-rule border border-rule mt-12">
         {operators.map((op) => (
-          <div
+          <TiltCard
             key={op.num + op.name}
-            className="bg-ink p-6 md:p-7 flex flex-col gap-3 transition-colors duration-200 hover:bg-ink-2 shadow-[inset_0_1px_0_rgba(244,239,227,0.06),inset_0_-16px_24px_-16px_rgba(0,0,0,0.55)]"
+            tiltLimit={10}
+            scale={1.03}
+            perspective={1400}
+            effect="evade"
+            spotlight
+            className="bg-ink p-6 md:p-7 flex flex-col gap-3 shadow-[inset_0_1px_0_rgba(244,239,227,0.06),inset_0_-16px_24px_-16px_rgba(0,0,0,0.55)]"
           >
             <div className="font-mono text-[10px] tracking-[0.15em] text-paper-faint">
               {op.num}
@@ -37,7 +43,7 @@ export function OperatorRail() {
               <span>{op.category}</span>
               <span className="text-paper-faint">{op.era}</span>
             </div>
-          </div>
+          </TiltCard>
         ))}
       </div>
       </div>

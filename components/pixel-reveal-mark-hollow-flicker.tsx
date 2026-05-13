@@ -1,0 +1,170 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+
+type Tile = {
+  x: number;
+  y: number;
+  tx: number;
+  ty: number;
+  size: number;
+  c: string;
+  phase: number;
+};
+
+const HORNS = [
+  "10000000000000000001",
+  "10000000000000000001",
+  "01000000000000000010",
+  "01000000000000000010",
+  "00100000000000000100",
+  "00100000000000000100",
+  "00010000000000001000",
+  "00010000000000001000",
+  "00001100000000110000",
+  "00000110000001100000",
+  "00000011000011000000",
+  "00000001100110000000",
+  "00000000111100000000",
+  "00000000011000000000",
+  "00000000011000000000",
+  "00000000111100000000",
+];
+
+const FONT: Record<string, string[]> = {
+  L: ["1000", "1000", "1000", "1000", "1111"],
+  O: ["0110", "1001", "1001", "1001", "0110"],
+  P: ["1110", "1001", "1110", "1000", "1000"],
+  E: ["1111", "1000", "1110", "1000", "1111"],
+  S: ["0111", "1000", "0110", "0001", "1110"],
+};
+
+export function PixelRevealMarkHollowFlicker() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const cvs = canvasRef.current;
+    if (!cvs) return;
+    const ctx = cvs.getContext("2d");
+    if (!ctx) return;
+
+    let tiles: Tile[] = [];
+    let raf = 0;
+    const t0 = performance.now();
+
+    function build(W: number, H: number) {
+      tiles = [];
+      const hornsCols = HORNS[0].length;
+      const hornsRows = HORNS.length;
+      const hornsTileSize = Math.min(
+        (W * 0.6) / hornsCols,
+        (H * 0.7) / hornsRows
+      );
+      const hornsTotalW = hornsCols * hornsTileSize;
+      const hornsTotalH = hornsRows * hornsTileSize;
+      const hornsOffsetX = (W - hornsTotalW) / 2;
+      const hornsOffsetY = (H - hornsTotalH) / 2 - hornsTileSize * 1.4;
+
+      for (let r = 0; r < hornsRows; r++) {
+        for (let c = 0; c < hornsCols; c++) {
+          if (HORNS[r][c] === "1") {
+            tiles.push({
+              x: Math.random() * W,
+              y: Math.random() * H,
+              tx: hornsOffsetX + c * hornsTileSize,
+              ty: hornsOffsetY + r * hornsTileSize,
+              size: hornsTileSize * 0.94,
+              c: "#7A4FD9",
+              phase: Math.random() * 6.28,
+            });
+          }
+        }
+      }
+
+      const word = "LOPES";
+      const wordRows = 5;
+      const wordColsPer = 4;
+      const wordGap = 1;
+      const wordCols =
+        wordColsPer * word.length + (word.length - 1) * wordGap;
+      const wordTileSize = hornsTileSize * 0.35;
+      const wordTotalW = wordCols * wordTileSize;
+      const wordOffsetX = (W - wordTotalW) / 2;
+      const wordOffsetY =
+        hornsOffsetY + hornsTotalH + wordTileSize * 1.5;
+
+      for (let li = 0; li < word.length; li++) {
+        const ch = FONT[word[li]];
+        for (let r = 0; r < wordRows; r++) {
+          for (let c = 0; c < wordColsPer; c++) {
+            if (ch[r][c] === "1") {
+              tiles.push({
+                x: Math.random() * W,
+                y: Math.random() * H,
+                tx:
+                  wordOffsetX +
+                  (li * (wordColsPer + wordGap) + c) * wordTileSize,
+                ty: wordOffsetY + r * wordTileSize,
+                size: wordTileSize * 0.94,
+                c: "#ECE7DC",
+                phase: Math.random() * 6.28,
+              });
+            }
+          }
+        }
+      }
+    }
+
+    function resize() {
+      if (!cvs || !ctx) return;
+      const parent = cvs.parentElement;
+      if (!parent) return;
+      const r = parent.getBoundingClientRect();
+      const w = r.width || 800;
+      const h = r.height || w * 0.44;
+      const dpr = window.devicePixelRatio || 1;
+      cvs.width = Math.max(1, Math.floor(w * dpr));
+      cvs.height = Math.max(1, Math.floor(h * dpr));
+      cvs.style.width = `${w}px`;
+      cvs.style.height = `${h}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      build(w, h);
+    }
+
+    function loop(now: number) {
+      if (!cvs || !ctx) return;
+      const W = parseFloat(cvs.style.width) || cvs.clientWidth || 800;
+      const H = parseFloat(cvs.style.height) || cvs.clientHeight || 360;
+      const elapsed = (now - t0) / 1000;
+      ctx.clearRect(0, 0, W, H);
+      ctx.lineWidth = 1.25;
+
+      for (const tile of tiles) {
+        tile.x = tile.x + (tile.tx - tile.x) * 0.05;
+        tile.y = tile.y + (tile.ty - tile.y) * 0.05;
+        const pulse = 0.45 + 0.55 * (0.5 + 0.5 * Math.sin(elapsed * 1.1 + tile.phase));
+        ctx.globalAlpha = pulse;
+        ctx.strokeStyle = tile.c;
+        ctx.strokeRect(
+          Math.round(tile.x) + 0.5,
+          Math.round(tile.y) + 0.5,
+          tile.size,
+          tile.size
+        );
+      }
+      ctx.globalAlpha = 1;
+      raf = requestAnimationFrame(loop);
+    }
+
+    resize();
+    raf = requestAnimationFrame(loop);
+    window.addEventListener("resize", resize);
+
+    return () => {
+      window.removeEventListener("resize", resize);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} className="block w-full h-full" />;
+}

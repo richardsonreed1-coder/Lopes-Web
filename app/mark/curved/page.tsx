@@ -8,7 +8,7 @@ export default function MarkCurvedPage() {
     <SignatureShell withConfetti={false}>
       <section className="relative z-[1] min-h-screen flex items-center justify-center px-6 pt-32 pb-40">
         <div className="relative" style={{ width: "min(720px, 92vw)", aspectRatio: "4 / 5" }}>
-          <div className="absolute -inset-3 border border-white/[0.08] pointer-events-none" />
+          
           <PixelRevealMarkCurved />
           <HeroMeta />
         </div>

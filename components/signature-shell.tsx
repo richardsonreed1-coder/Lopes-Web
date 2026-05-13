@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ConfettiBg } from "@/components/confetti-bg";
 
-type Variant = { slug: string; label: string; family: "main" | "mark" };
+type Variant = { slug: string; label: string; family: "main" | "mark" | "hollow" };
 
 const VARIANTS: Variant[] = [
   { slug: "/", label: "A · Baseline", family: "main" },
@@ -14,6 +14,9 @@ const VARIANTS: Variant[] = [
   { slug: "/mark/curved", label: "D1 · Curved", family: "mark" },
   { slug: "/mark/crest", label: "D2 · Crest", family: "mark" },
   { slug: "/mark/hollow", label: "D3 · Hollow", family: "mark" },
+  { slug: "/mark/hollow/thin", label: "D3a · Thin", family: "hollow" },
+  { slug: "/mark/hollow/dot", label: "D3b · Dot", family: "hollow" },
+  { slug: "/mark/hollow/flicker", label: "D3c · Flicker", family: "hollow" },
 ];
 
 export function SignatureShell({

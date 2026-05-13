@@ -72,7 +72,10 @@ export default function Home() {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-rule border border-rule mt-12">
             {epochs.map((e) => (
-              <div key={e.year + e.label} className="bg-ink p-7">
+              <div
+                key={e.year + e.label}
+                className="bg-ink p-7 shadow-[inset_0_1px_0_rgba(244,239,227,0.06),inset_0_-16px_24px_-16px_rgba(0,0,0,0.55)]"
+              >
                 <div className="font-display font-normal text-[32px] text-purple-2 leading-none mb-2">
                   {e.year}
                 </div>

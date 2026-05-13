@@ -25,7 +25,7 @@ export function OperatorRail() {
         {operators.map((op) => (
           <div
             key={op.num + op.name}
-            className="bg-ink p-6 md:p-7 flex flex-col gap-3 transition-colors duration-200 hover:bg-ink-2"
+            className="bg-ink p-6 md:p-7 flex flex-col gap-3 transition-colors duration-200 hover:bg-ink-2 shadow-[inset_0_1px_0_rgba(244,239,227,0.06),inset_0_-16px_24px_-16px_rgba(0,0,0,0.55)]"
           >
             <div className="font-mono text-[10px] tracking-[0.15em] text-paper-faint">
               {op.num}

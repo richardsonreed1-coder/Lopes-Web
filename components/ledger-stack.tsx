@@ -16,15 +16,31 @@ const COLOR_CLASSES: Record<LedgerColor, { bg: string; text: string; border: str
 
 function LedgerVolume({ ledger, isOpen, onToggle }: { ledger: Ledger; isOpen: boolean; onToggle: () => void }) {
   const c = COLOR_CLASSES[ledger.color];
+  const isPaper = ledger.color === "paper";
   return (
     <div
-      className={`relative ${c.bg} ${c.text} border-t border-black/25 overflow-hidden transition-transform duration-300 ease-out hover:translate-x-2`}
+      className={`relative ${c.bg} ${c.text} border-t border-black/35 overflow-hidden transition-transform duration-300 ease-out hover:translate-x-2 shadow-[inset_-3px_0_6px_rgba(0,0,0,0.18)]`}
     >
+      <div
+        className={`absolute inset-x-0 top-0 h-px pointer-events-none ${isPaper ? "bg-ink/20" : "bg-white/18"}`}
+      />
+      <div
+        className={`absolute inset-0 pointer-events-none bg-gradient-to-b ${
+          isPaper
+            ? "from-ink/[0.03] via-transparent to-ink/[0.10]"
+            : "from-white/[0.07] via-transparent to-black/[0.14]"
+        }`}
+      />
+      <div
+        className={`absolute inset-x-0 bottom-0 h-3 pointer-events-none bg-gradient-to-t ${
+          isPaper ? "from-ink/25 to-transparent" : "from-black/40 to-transparent"
+        }`}
+      />
       <button
         onClick={onToggle}
         aria-expanded={isOpen}
         aria-controls={`vol-${ledger.slug}`}
-        className={`block w-full text-left px-5 md:px-6 ${isOpen ? "pt-6 pb-3" : "py-[18px]"} cursor-pointer transition-[padding] duration-300`}
+        className={`relative z-10 block w-full text-left px-5 md:px-6 ${isOpen ? "pt-6 pb-3" : "py-[18px]"} cursor-pointer transition-[padding] duration-300`}
       >
         <div className="grid grid-cols-[64px_1fr_auto] gap-4 md:gap-5 items-center md:items-baseline min-h-[44px]">
           <span className="font-mono text-[11px] opacity-60 whitespace-nowrap">
@@ -41,7 +57,7 @@ function LedgerVolume({ ledger, isOpen, onToggle }: { ledger: Ledger; isOpen: bo
       </button>
       <div
         id={`vol-${ledger.slug}`}
-        className={`grid transition-[grid-template-rows,opacity] duration-300 ease-out px-5 md:px-6 ${
+        className={`relative z-10 grid transition-[grid-template-rows,opacity] duration-300 ease-out px-5 md:px-6 ${
           isOpen ? "[grid-template-rows:1fr] opacity-100 pb-7" : "[grid-template-rows:0fr] opacity-0 pb-0"
         }`}
       >
@@ -82,7 +98,7 @@ export function LedgerStack() {
         <span>The stack ↓</span>
         <span>Tap a volume to read</span>
       </div>
-      <div className="flex flex-col">
+      <div className="flex flex-col shadow-[0_30px_60px_-20px_rgba(0,0,0,0.65),0_8px_16px_-8px_rgba(0,0,0,0.5)]">
         {ledgers.map((l) => (
           <LedgerVolume
             key={l.vol}

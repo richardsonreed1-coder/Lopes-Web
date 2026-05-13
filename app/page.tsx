@@ -122,6 +122,16 @@ export default function SignaturePage() {
         </div>
       </section>
 
+      <section className="relative z-[1] flex items-center justify-center py-32 md:py-40 px-6">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/brand/antelope-mark.png"
+          alt=""
+          className="w-64 md:w-80 lg:w-[22rem] h-auto opacity-95 select-none"
+          draggable={false}
+        />
+      </section>
+
       <section id="categories" className="relative z-[1] px-6 md:px-10 pt-10 pb-32">
         <div className="font-mono text-[11px] tracking-[0.18em] uppercase text-[#7A4FD9] mb-8">
           02 / Operating Categories

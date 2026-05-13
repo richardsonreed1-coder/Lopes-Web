@@ -4,8 +4,9 @@ export function OperatorRail() {
   return (
     <section
       id="operators"
-      className="px-6 md:px-10 py-24 md:py-32 max-w-[1100px] mx-auto"
+      className="bg-ink border-t border-rule-soft shadow-[inset_0_1px_0_rgba(244,239,227,0.04)]"
     >
+      <div className="px-6 md:px-10 py-24 md:py-32 max-w-[1100px] mx-auto">
       <div className="font-mono text-[11px] tracking-[0.18em] uppercase text-purple-2 mb-8">
         02 / Operators
       </div>
@@ -38,6 +39,7 @@ export function OperatorRail() {
             </div>
           </div>
         ))}
+      </div>
       </div>
     </section>
   );

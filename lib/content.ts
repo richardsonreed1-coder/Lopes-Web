@@ -174,9 +174,9 @@ export const letters: Letter[] = [
 
 export const epochs = [
   { year: "2003", label: "Grand Canyon University acquired" },
-  { year: "2018", label: "Exit as #1 private Christian university" },
   { year: "2017", label: "Lopes Capital founded" },
-  { year: "5", label: "Operating categories today" },
+  { year: "2018", label: "Exit as #1 private Christian university" },
+  { year: "2026", label: "Five operating categories" },
 ];
 
 export type Operator = {

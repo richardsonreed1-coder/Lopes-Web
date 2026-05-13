@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter, JetBrains_Mono } from "next/font/google";
-import { TopNav } from "@/components/top-nav";
-import { SideRail } from "@/components/side-rail";
-import { SiteFooter } from "@/components/site-footer";
+import { Fraunces, Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
 const fraunces = Fraunces({
@@ -24,6 +21,12 @@ const jetbrains = JetBrains_Mono({
   display: "swap",
 });
 
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-grotesk",
+  subsets: ["latin"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "Lopes Capital — Operators since 2017",
   description:
@@ -34,17 +37,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${inter.variable} ${jetbrains.variable}`}
+      className={`${fraunces.variable} ${inter.variable} ${jetbrains.variable} ${spaceGrotesk.variable}`}
     >
-      <body>
-        <TopNav />
-        <SideRail />
-        <div className="hidden md:block fixed bottom-6 left-6 z-40 font-mono text-[11px] text-paper-faint">
-          SCOTTSDALE · AZ
-        </div>
-        {children}
-        <SiteFooter />
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

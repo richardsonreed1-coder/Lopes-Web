@@ -12,20 +12,35 @@ export default function Home() {
           className="min-h-screen flex flex-col items-center justify-center px-6 md:px-10 pt-32 pb-24 relative"
         >
           <div className="w-full max-w-[680px] mx-auto mb-12 md:mb-16">
-            <div className="font-mono text-[11px] tracking-[0.18em] uppercase text-purple-2 mb-5">
-              Lopes Capital · Est. 2017
+            <div className="font-mono text-[11px] tracking-[0.18em] uppercase border-t border-b border-rule grid grid-cols-3 mb-9">
+              <div className="px-3 py-2.5 text-purple-2">
+                Lopes Capital
+              </div>
+              <div className="px-3 py-2.5 text-center text-paper-dim border-l border-r border-rule">
+                Multi-Family Office
+              </div>
+              <div className="px-3 py-2.5 text-right text-paper-mute">
+                No. IX · MMXXVI
+              </div>
             </div>
             <h1 className="font-display font-normal text-[clamp(40px,6vw,72px)] leading-[0.98] tracking-[-0.025em]">
-              Operators first.{" "}
-              <em className="italic text-purple-2 font-medium">Allocators second.</em>
+              One school then.{" "}
+              <em className="italic text-purple-2 font-medium">Five lanes now.</em>
             </h1>
+            <p className="font-sans italic text-[18px] md:text-[20px] leading-[1.5] text-paper-dim mt-7 max-w-[58ch]">
+              In 2003 we acquired Grand Canyon University. In 2018 we exited it
+              as the country&rsquo;s largest private Christian university. Lopes
+              Capital is the multi-family office that came next &mdash; built by
+              the same operators, written in{" "}
+              <span className="not-italic text-paper">six volumes</span>.
+            </p>
           </div>
           <LedgerStack />
           <div className="absolute left-6 md:left-10 right-6 md:right-10 bottom-10 flex flex-col md:flex-row md:justify-between items-start md:items-end gap-4 font-mono text-[11px] text-paper-mute uppercase tracking-[0.1em]">
-            <span className="font-sans italic normal-case tracking-normal text-[13px] text-paper-dim max-w-[34ch] leading-[1.5]">
-              A Scottsdale multi-family office. Six volumes, one ledger.
+            <span className="font-sans italic normal-case tracking-normal text-[13px] text-paper-dim max-w-[36ch] leading-[1.5]">
+              Six volumes. One ledger. Read in any order.
             </span>
-            <span>SCOTTSDALE · ARIZONA</span>
+            <span>Scottsdale · Arizona · Est. 2017</span>
           </div>
         </section>
 

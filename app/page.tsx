@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { ledgers, operators } from "@/lib/content";
 import { ConfettiBg } from "@/components/confetti-bg";
 import { PixelReveal } from "@/components/pixel-reveal";
@@ -68,7 +67,6 @@ export default function SignaturePage() {
           <a href="#origin" className="opacity-70 hover:opacity-100 transition-opacity">Origin</a>
           <a href="#categories" className="opacity-70 hover:opacity-100 transition-opacity">Categories</a>
           <a href="#contact" className="opacity-70 hover:opacity-100 transition-opacity">Contact</a>
-          <Link href="/" className="opacity-50 hover:opacity-100 transition-opacity">← press</Link>
         </div>
       </nav>
 

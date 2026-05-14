@@ -7,73 +7,127 @@ import { VolumeCounter } from "@/components/volume-counter";
 
 export default function FogPage() {
   return (
-    <div className="relative h-screen overflow-hidden bg-ink font-sans text-paper selection:bg-paper/10">
+    <div
+      id="app-container"
+      className="relative h-screen text-white flex flex-col font-sans overflow-hidden selection:bg-white/10"
+    >
       <MistBackground />
 
-      {/* Atmospheric blur spots — layered over the WebGL mist */}
-      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden opacity-30">
-        <div className="absolute -left-[10%] -top-[10%] h-[60%] w-[60%] rounded-full bg-[#1A1B22] blur-[120px]" />
-        <div className="absolute -bottom-[20%] -right-[10%] h-[70%] w-[70%] rounded-full bg-[#3a2d55] blur-[140px]" />
-        <div className="absolute left-[30%] top-[40%] h-[40%] w-[40%] rounded-full bg-[#14151f] blur-[100px]" />
+      {/* Atmospheric Blur Spots */}
+      <div
+        id="atmospheric-layers"
+        className="absolute inset-0 z-0 pointer-events-none overflow-hidden opacity-30"
+      >
+        <div
+          id="blur-1"
+          className="absolute top-[-10%] left-[-10%] w-[60%] h-[60%] rounded-full bg-[#1e2029] blur-[120px]"
+        />
+        <div
+          id="blur-2"
+          className="absolute bottom-[-20%] right-[-10%] w-[70%] h-[70%] rounded-full bg-[#2d3345] blur-[140px]"
+        />
+        <div
+          id="blur-3"
+          className="absolute top-[40%] left-[30%] w-[40%] h-[40%] rounded-full bg-[#14151f] blur-[100px]"
+        />
       </div>
 
-      <div className="relative z-10 flex h-full flex-col p-8 md:p-12 lg:p-16">
-        {/* TOP NAV */}
-        <nav className="mb-12 flex items-center justify-between md:mb-20">
-          <div className="font-mono text-[10px] font-semibold uppercase tracking-[0.4em] md:text-xs">
+      {/* Content Layer */}
+      <div
+        id="content-layer"
+        className="relative z-10 flex flex-col h-full p-8 md:p-12 lg:p-16"
+      >
+        {/* Navigation */}
+        <nav
+          id="top-nav"
+          className="flex justify-between items-center mb-12 md:mb-24"
+        >
+          <div
+            id="brand-logo"
+            className="text-[10px] md:text-xs tracking-[0.4em] uppercase font-semibold"
+          >
             Lopes / Capital
           </div>
-          <div className="hidden gap-10 font-mono text-[10px] uppercase tracking-[0.25em] opacity-60 md:flex">
-            <Link href="/#categories" className="transition-opacity hover:opacity-100">Volumes</Link>
-            <Link href="/#operators" className="transition-opacity hover:opacity-100">Operators</Link>
-            <Link href="/#letters" className="transition-opacity hover:opacity-100">Letters</Link>
-            <Link href="/#contact" className="transition-opacity hover:opacity-100">Contact</Link>
+          <div
+            id="nav-links"
+            className="hidden md:flex gap-10 text-[10px] tracking-[0.2em] uppercase opacity-60"
+          >
+            <Link href="/#categories" className="hover:opacity-100 transition-opacity">
+              Volumes
+            </Link>
+            <Link href="/#operators" className="hover:opacity-100 transition-opacity">
+              Operators
+            </Link>
+            <Link href="/#letters" className="hover:opacity-100 transition-opacity">
+              Letters
+            </Link>
+            <Link href="/#contact" className="hover:opacity-100 transition-opacity">
+              Contact
+            </Link>
           </div>
         </nav>
 
-        {/* HERO */}
-        <main className="relative flex max-w-4xl flex-1 flex-col items-start justify-center">
+        {/* Main Hero Section */}
+        <main
+          id="main-hero"
+          className="flex-1 flex flex-col justify-center items-start max-w-4xl relative"
+        >
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col items-start"
           >
-            <div className="mb-6 flex items-center gap-4">
-              <span className="h-px w-12 bg-paper/30" />
-              <span className="font-mono text-[10px] uppercase tracking-[0.3em] opacity-55 md:text-[11px]">
+            <div id="hero-status" className="mb-6 flex items-center gap-4">
+              <span id="line-indicator" className="h-[1px] w-12 bg-white/30" />
+              <span
+                id="status-label"
+                className="text-[10px] md:text-[11px] tracking-[0.3em] uppercase opacity-50"
+              >
                 Volume IX · MMXXVI
               </span>
             </div>
 
-            <h1 className="font-display -ml-1 mb-8 text-[64px] font-normal italic leading-[0.9] tracking-[-0.02em] sm:text-[84px] lg:text-[110px]">
+            <h1
+              id="hero-title"
+              className="text-[64px] sm:text-[84px] lg:text-[110px] leading-[0.9] font-serif italic mb-8 -ml-1"
+            >
               Quiet <br />
-              <span className="ml-12 text-purple-2 md:ml-16">Capital.</span>
+              <span className="ml-12 md:ml-16">Capital.</span>
             </h1>
 
-            <p className="max-w-md font-sans text-[17px] font-light leading-relaxed text-paper-dim md:text-[19px]">
+            <p
+              id="hero-description"
+              className="text-lg md:text-xl text-zinc-400 font-light leading-relaxed max-w-md"
+            >
               A multi-family office operating five sectors and written in six
-              volumes — signed, dated, and on the record since 2017.
+              volumes &mdash; signed, dated, and on the record since 2017.
             </p>
 
-            <div className="mt-14 flex w-full flex-col items-start gap-12 md:flex-row">
+            <div
+              id="interactive-elements"
+              className="mt-16 w-full flex flex-col md:flex-row items-start gap-12"
+            >
               <VolumeCounter />
 
-              <div className="flex flex-col gap-8 pt-4">
-                <div className="flex flex-col gap-2">
-                  <span className="font-mono text-[10px] uppercase tracking-[0.3em] opacity-45">
+              <div
+                id="simulation-meta"
+                className="flex flex-col gap-8 pt-4"
+              >
+                <div id="meta-item-1" className="flex flex-col gap-2">
+                  <span className="text-[10px] tracking-[0.3em] uppercase opacity-40">
                     Coverage Model
                   </span>
-                  <p className="max-w-[230px] font-sans text-[12.5px] font-light leading-relaxed text-paper-dim">
-                    Five lanes — private markets, public markets,
+                  <p className="text-xs text-zinc-300 font-light max-w-[200px]">
+                    Five lanes &mdash; private markets, public markets,
                     event-driven, signals, hard assets.
                   </p>
                 </div>
-                <div className="flex flex-col gap-2">
-                  <span className="font-mono text-[10px] uppercase tracking-[0.3em] opacity-45">
+                <div id="meta-item-2" className="flex flex-col gap-2">
+                  <span className="text-[10px] tracking-[0.3em] uppercase opacity-40">
                     Cadence
                   </span>
-                  <p className="max-w-[230px] font-sans text-[12.5px] font-light leading-relaxed text-paper-dim">
+                  <p className="text-xs text-zinc-300 font-light max-w-[200px]">
                     One letter per year, signed and dated. The archive runs
                     2018 through 2025.
                   </p>
@@ -81,80 +135,97 @@ export default function FogPage() {
               </div>
             </div>
 
-            <Link href="/capital-markets" className="group mt-14 flex items-center gap-6">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full border border-paper/20 transition-colors group-hover:border-paper/55 md:h-14 md:w-14">
+            <Link
+              href="/capital-markets"
+              id="cta-button"
+              className="mt-16 group flex items-center gap-6 cursor-pointer"
+            >
+              <div
+                id="outer-circle"
+                className="w-12 h-12 md:w-14 md:h-14 rounded-full border border-white/20 flex items-center justify-center group-hover:border-white/50 transition-colors"
+              >
                 <motion.div
-                  animate={{ scale: [1, 1.55, 1] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                  className="h-1.5 w-1.5 rounded-full bg-paper md:h-2 md:w-2"
+                  animate={{ scale: [1, 1.5, 1] }}
+                  transition={{ duration: 4, repeat: Infinity }}
+                  id="inner-dot"
+                  className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-white"
                 />
               </div>
-              <span className="font-mono text-[10px] font-medium uppercase tracking-[0.3em] opacity-65 transition-opacity group-hover:opacity-100">
-                Open Volume One →
+              <span
+                id="cta-text"
+                className="text-[9px] md:text-[10px] tracking-[0.3em] uppercase group-hover:opacity-100 opacity-60 transition-opacity font-medium"
+              >
+                Open Volume One
               </span>
             </Link>
           </motion.div>
         </main>
 
-        {/* FOOTER META */}
-        <footer className="mt-auto flex flex-col items-start justify-between gap-8 border-t border-paper/10 pt-8 md:flex-row md:items-end">
-          <div className="flex flex-wrap gap-8 md:gap-16">
-            <div className="flex flex-col gap-2">
-              <span className="font-mono text-[9px] uppercase tracking-[0.25em] opacity-45">
+        {/* Footer Meta */}
+        <footer
+          id="bottom-footer"
+          className="mt-auto border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-start md:items-end gap-8"
+        >
+          <div
+            id="tech-meta"
+            className="flex flex-wrap gap-8 md:gap-16"
+          >
+            <div id="meta-tech" className="flex flex-col gap-2">
+              <span className="text-[8px] md:text-[9px] tracking-widest uppercase opacity-40">
                 Mandate
               </span>
-              <span className="font-mono text-xs tracking-tight text-paper-dim">
+              <span className="text-xs font-mono text-zinc-200">
                 Multi-Family Office
               </span>
             </div>
-            <div className="flex flex-col gap-2">
-              <span className="font-mono text-[9px] uppercase tracking-[0.25em] opacity-45">
+            <div id="meta-fps" className="flex flex-col gap-2">
+              <span className="text-[8px] md:text-[9px] tracking-widest uppercase opacity-40">
                 Vintage
               </span>
-              <span className="font-mono text-xs tracking-tight text-paper-dim">
+              <span className="text-xs font-mono text-zinc-200 tracking-tighter">
                 Est. 2017
               </span>
             </div>
-            <div className="flex flex-col gap-2">
-              <span className="font-mono text-[9px] uppercase tracking-[0.25em] opacity-45">
-                Domicile
+            <div id="meta-origin" className="flex flex-col gap-2">
+              <span className="text-[8px] md:text-[9px] tracking-widest uppercase opacity-40">
+                Environment
               </span>
-              <span className="font-mono text-xs tracking-tight text-paper-dim">
-                Scottsdale, Arizona
-              </span>
-            </div>
-            <div className="flex flex-col gap-2">
-              <span className="font-mono text-[9px] uppercase tracking-[0.25em] opacity-45">
-                Lineage
-              </span>
-              <span className="font-mono text-xs tracking-tight text-paper-dim">
-                GCU · 2003 — 2018
+              <span className="text-xs font-mono text-zinc-200">
+                Scottsdale · Arizona
               </span>
             </div>
           </div>
 
-          <div className="self-end text-right md:self-auto">
-            <div className="font-display text-[36px] font-normal italic leading-none text-paper/85 md:text-[44px]">
+          <div
+            id="section-index"
+            className="text-right self-end md:self-auto"
+          >
+            <div className="text-[32px] md:text-[42px] font-serif italic leading-none text-white/90">
               IX
             </div>
-            <div className="mt-1 font-mono text-[9px] uppercase tracking-[0.2em] opacity-45">
-              Volume Stack · MMXXVI
+            <div className="text-[8px] md:text-[9px] tracking-[0.2em] uppercase opacity-40 mt-1">
+              Volume Index
             </div>
           </div>
         </footer>
       </div>
 
-      {/* Decorative radial grid */}
+      {/* Decorative Grid Overlay */}
       <div
-        className="pointer-events-none absolute inset-0 z-20 opacity-[0.035]"
+        id="grid-overlay"
+        className="absolute inset-0 pointer-events-none z-20 opacity-[0.03]"
         style={{
-          backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)",
+          backgroundImage:
+            "radial-gradient(circle, white 1px, transparent 1px)",
           backgroundSize: "40px 40px",
         }}
       />
 
-      {/* Bottom vignette */}
-      <div className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-b from-transparent via-transparent to-ink/70" />
+      {/* Atmosphere depth vignette */}
+      <div
+        id="atmosphere-depth"
+        className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-b from-transparent via-transparent to-[#09090b]/60"
+      />
     </div>
   );
 }

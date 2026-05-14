@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Lopes Capital — Mockup 03 · Fog</title>
+<meta name="description" content="Atmospheric mist hero. Tight port of Lopes-Fog with Lopes Capital copy.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #09090b;
+    --text: #ffffff;
+    --zinc-200: #e4e4e7;
+    --zinc-300: #d4d4d8;
+    --zinc-400: #a1a1aa;
+    --zinc-500: #71717a;
+    --purple: #7A4FD9;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow: hidden;
+  }
+  ::selection { background: rgba(255,255,255,0.1); }
+  body { height: 100vh; }
+  .serif { font-family: 'Playfair Display', serif; font-style: italic; }
+  .mono  { font-family: 'JetBrains Mono', monospace; }
+
+  /* layer: WebGL mist */
+  #mist {
+    position: fixed; inset: 0;
+    width: 100%; height: 100%;
+    z-index: -1;
+    background: #0E0F12;
+    pointer-events: none;
+  }
+
+  /* layer: app container */
+  #app {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    color: var(--text);
+  }
+
+  /* atmospheric blur spots */
+  .atmos { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; opacity: 0.3; }
+  .atmos .blob { position: absolute; border-radius: 9999px; filter: blur(120px); }
+  .atmos .b1 { top: -10%; left: -10%; width: 60%; height: 60%; background: #1e2029; filter: blur(120px); }
+  .atmos .b2 { bottom: -20%; right: -10%; width: 70%; height: 70%; background: #2d3345; filter: blur(140px); }
+  .atmos .b3 { top: 40%; left: 30%; width: 40%; height: 40%; background: #14151f; filter: blur(100px); }
+
+  /* content layer */
+  .content {
+    position: relative;
+    z-index: 10;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 32px;
+  }
+  @media (min-width: 768px) { .content { padding: 48px; } }
+  @media (min-width: 1024px){ .content { padding: 64px; } }
+
+  /* nav */
+  nav.top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 48px; }
+  @media (min-width: 768px) { nav.top { margin-bottom: 96px; } }
+  .brand { font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase; font-weight: 600; }
+  @media (min-width: 768px) { .brand { font-size: 12px; } }
+  .navlinks { display: none; gap: 40px; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.6; }
+  @media (min-width: 768px) { .navlinks { display: flex; } }
+  .navlinks a { color: inherit; text-decoration: none; transition: opacity .15s; }
+  .navlinks a:hover { opacity: 1; }
+
+  /* hero */
+  main.hero {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    max-width: 56rem;
+    position: relative;
+    animation: slidein 1.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  @keyframes slidein {
+    from { opacity: 0; transform: translateX(-20px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  .hero-status { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+  .hero-status .line { height: 1px; width: 48px; background: rgba(255,255,255,0.3); }
+  .hero-status .label { font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.5; }
+  @media (min-width: 768px) { .hero-status .label { font-size: 11px; } }
+
+  h1.title {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 64px;
+    line-height: 0.9;
+    margin-left: -4px;
+    margin-bottom: 32px;
+    font-weight: 400;
+  }
+  @media (min-width: 640px) { h1.title { font-size: 84px; } }
+  @media (min-width: 1024px){ h1.title { font-size: 110px; } }
+  h1.title .indent { display: inline-block; margin-left: 48px; }
+  @media (min-width: 768px) { h1.title .indent { margin-left: 64px; } }
+
+  .lede {
+    font-size: 18px;
+    color: var(--zinc-400);
+    font-weight: 300;
+    line-height: 1.625;
+    max-width: 28rem;
+  }
+  @media (min-width: 768px) { .lede { font-size: 20px; } }
+
+  /* interactive */
+  .interactive {
+    margin-top: 64px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+    align-items: flex-start;
+  }
+  @media (min-width: 768px) { .interactive { flex-direction: row; } }
+
+  /* counter card */
+  .counter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 40px;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.02);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    width: 100%;
+    max-width: 24rem;
+    transition: background .2s;
+  }
+  .counter:hover { background: rgba(255,255,255,0.035); }
+  .counter h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 400;
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 4px;
+  }
+  .counter-display { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .counter-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 72px;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: rgba(255,255,255,0.9);
+    transition: opacity .6s cubic-bezier(0.16, 1, 0.3, 1), filter .6s, transform .6s;
+  }
+  .counter-num.flipping { opacity: 0; filter: blur(4px); transform: translateY(8px); }
+  .counter-meta {
+    margin-top: 12px;
+    max-width: 220px;
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 15px;
+    line-height: 1.25;
+    color: rgba(255,255,255,0.75);
+    transition: opacity .6s;
+  }
+  .counter-meta .emph {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-style: normal;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    margin-top: 4px;
+  }
+  .counter-glow {
+    position: absolute; inset: 0; z-index: -1;
+    background: rgba(255,255,255,0.05);
+    filter: blur(64px);
+    border-radius: 9999px;
+  }
+  .counter-controls { display: flex; align-items: center; gap: 16px; margin-top: 8px; }
+  .counter-controls button {
+    width: 44px; height: 44px;
+    border-radius: 9999px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: transparent;
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(255,255,255,0.45);
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .counter-controls button:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.3); color: rgba(255,255,255,0.95); }
+  .counter-controls .sep { height: 1px; width: 32px; background: rgba(255,255,255,0.1); }
+  .counter-footer { display: flex; flex-direction: column; align-items: center; gap: 12px; padding-top: 12px; }
+  .counter-pulse { display: flex; align-items: center; gap: 8px; }
+  .counter-pulse .dot {
+    width: 6px; height: 6px; border-radius: 9999px;
+    background: var(--purple);
+    box-shadow: 0 0 8px rgba(122,79,217,0.7);
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+  .counter-pulse .pulse-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+  }
+
+  /* meta column next to counter */
+  .meta-col { display: flex; flex-direction: column; gap: 32px; padding-top: 16px; }
+  .meta-item { display: flex; flex-direction: column; gap: 8px; }
+  .meta-label { font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.4; }
+  .meta-text  { font-size: 12px; color: var(--zinc-300); font-weight: 300; max-width: 200px; line-height: 1.5; }
+
+  /* cta */
+  .cta {
+    margin-top: 64px;
+    display: inline-flex;
+    align-items: center;
+    gap: 24px;
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .cta .circle {
+    width: 48px; height: 48px;
+    border-radius: 9999px;
+    border: 1px solid rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color .2s;
+  }
+  @media (min-width: 768px) { .cta .circle { width: 56px; height: 56px; } }
+  .cta:hover .circle { border-color: rgba(255,255,255,0.5); }
+  .cta .innerdot {
+    width: 6px; height: 6px;
+    background: var(--text);
+    border-radius: 9999px;
+    animation: ctaScale 4s ease-in-out infinite;
+  }
+  @media (min-width: 768px) { .cta .innerdot { width: 8px; height: 8px; } }
+  @keyframes ctaScale { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.5); } }
+  .cta .text {
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    font-weight: 500;
+    opacity: 0.6;
+    transition: opacity .2s;
+  }
+  @media (min-width: 768px) { .cta .text { font-size: 10px; } }
+  .cta:hover .text { opacity: 1; }
+
+  /* footer */
+  footer.foot {
+    margin-top: auto;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    padding-top: 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 32px;
+  }
+  @media (min-width: 768px) {
+    footer.foot { flex-direction: row; align-items: flex-end; }
+  }
+  .tech { display: flex; flex-wrap: wrap; gap: 32px; }
+  @media (min-width: 768px) { .tech { gap: 64px; } }
+  .tech-item { display: flex; flex-direction: column; gap: 8px; }
+  .tech-label { font-size: 8px; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.4; }
+  @media (min-width: 768px) { .tech-label { font-size: 9px; } }
+  .tech-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--zinc-200);
+  }
+  .section-index { text-align: right; align-self: flex-end; }
+  @media (min-width: 768px) { .section-index { align-self: auto; } }
+  .section-index .big {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 32px;
+    line-height: 1;
+    color: rgba(255,255,255,0.9);
+  }
+  @media (min-width: 768px) { .section-index .big { font-size: 42px; } }
+  .section-index .lbl {
+    font-size: 8px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0.4;
+    margin-top: 4px;
+  }
+  @media (min-width: 768px) { .section-index .lbl { font-size: 9px; } }
+
+  /* decorative grid + vignette overlays */
+  .grid-overlay {
+    position: absolute; inset: 0;
+    pointer-events: none;
+    z-index: 20;
+    opacity: 0.03;
+    background-image: radial-gradient(circle, white 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .vignette {
+    position: absolute; inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background: linear-gradient(to bottom, transparent 0%, transparent 50%, rgba(9,9,11,0.6) 100%);
+  }
+</style>
+</head>
+<body>
+
+<canvas id="mist"></canvas>
+
+<div id="app">
+  <!-- atmospheric blurs -->
+  <div class="atmos" aria-hidden="true">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+  </div>
+
+  <!-- content -->
+  <div class="content">
+    <nav class="top">
+      <div class="brand">Lopes / Capital</div>
+      <div class="navlinks">
+        <a href="#">Volumes</a>
+        <a href="#">Operators</a>
+        <a href="#">Letters</a>
+        <a href="#">Contact</a>
+      </div>
+    </nav>
+
+    <main class="hero">
+      <div class="hero-status">
+        <span class="line"></span>
+        <span class="label mono">Volume IX · MMXXVI</span>
+      </div>
+
+      <h1 class="title">
+        Quiet<br>
+        <span class="indent">Capital.</span>
+      </h1>
+
+      <p class="lede">
+        A multi-family office operating five sectors and written in six
+        volumes &mdash; signed, dated, and on the record since 2017.
+      </p>
+
+      <div class="interactive">
+        <!-- counter -->
+        <div class="counter">
+          <h3>Volume Index</h3>
+          <div class="counter-display">
+            <div id="counterNum" class="counter-num">01</div>
+            <div id="counterMeta" class="counter-meta">
+              <span id="counterTitle">Capital Markets</span>
+              <span id="counterEmph" class="emph">signals, not noise</span>
+            </div>
+            <div class="counter-glow" aria-hidden="true"></div>
+          </div>
+          <div class="counter-controls">
+            <button id="btnPrev" aria-label="Previous volume">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M5 12h14"/></svg>
+            </button>
+            <div class="sep"></div>
+            <button id="btnNext" aria-label="Next volume">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M12 5v14M5 12h14"/></svg>
+            </button>
+          </div>
+          <div class="counter-footer">
+            <div class="counter-pulse">
+              <span class="dot"></span>
+              <span class="pulse-text">Currently in flight</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- meta -->
+        <div class="meta-col">
+          <div class="meta-item">
+            <span class="meta-label">Coverage Model</span>
+            <p class="meta-text">Five lanes &mdash; private markets, public markets, event-driven, signals, hard assets.</p>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Cadence</span>
+            <p class="meta-text">One letter per year, signed and dated. The archive runs 2018 through 2025.</p>
+          </div>
+        </div>
+      </div>
+
+      <a class="cta" href="#">
+        <span class="circle"><span class="innerdot"></span></span>
+        <span class="text">Open Volume One</span>
+      </a>
+    </main>
+
+    <footer class="foot">
+      <div class="tech">
+        <div class="tech-item">
+          <span class="tech-label">Mandate</span>
+          <span class="tech-val">Multi-Family Office</span>
+        </div>
+        <div class="tech-item">
+          <span class="tech-label">Vintage</span>
+          <span class="tech-val">Est. 2017</span>
+        </div>
+        <div class="tech-item">
+          <span class="tech-label">Environment</span>
+          <span class="tech-val">Scottsdale &middot; Arizona</span>
+        </div>
+      </div>
+      <div class="section-index">
+        <div class="big">IX</div>
+        <div class="lbl">Volume Index</div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- overlays -->
+  <div class="grid-overlay"></div>
+  <div class="vignette"></div>
+</div>
+
+<script>
+  // ───── volume counter ──────────────────────────────────────────────
+  const VOLUMES = [
+    { title: "Capital Markets",   emph: "signals, not noise" },
+    { title: "Real Estate",       emph: "hard assets, harder underwriting" },
+    { title: "Education",         emph: "where it started" },
+    { title: "Healthcare",        emph: "neuro hub, DTC spokes" },
+    { title: "Media & Consumer",  emph: "creators, owned infrastructure" },
+    { title: "Letters",           emph: "annual notes, on the record" }
+  ];
+  let idx = 0;
+  const numEl   = document.getElementById('counterNum');
+  const titleEl = document.getElementById('counterTitle');
+  const emphEl  = document.getElementById('counterEmph');
+  const metaEl  = document.getElementById('counterMeta');
+
+  function paint() {
+    numEl.classList.add('flipping');
+    metaEl.style.opacity = '0';
+    setTimeout(() => {
+      numEl.textContent = String(idx + 1).padStart(2, '0');
+      titleEl.textContent = VOLUMES[idx].title;
+      emphEl.textContent  = VOLUMES[idx].emph;
+      numEl.classList.remove('flipping');
+      metaEl.style.opacity = '1';
+    }, 200);
+  }
+  document.getElementById('btnPrev').addEventListener('click', () => { idx = (idx - 1 + VOLUMES.length) % VOLUMES.length; paint(); });
+  document.getElementById('btnNext').addEventListener('click', () => { idx = (idx + 1) % VOLUMES.length; paint(); });
+
+  // ───── WebGL mist (port of mist-background.tsx) ────────────────────
+  (function mist(){
+    const canvas = document.getElementById('mist');
+    const gl = canvas.getContext('webgl');
+    if (!gl) return;
+
+    const VERT = `
+      attribute vec2 position;
+      void main() { gl_Position = vec4(position, 0.0, 1.0); }
+    `;
+    const FRAG = `
+      precision highp float;
+      uniform float u_time;
+      uniform vec2 u_resolution;
+      uniform vec2 u_mouse;
+      float hash(vec2 p){ p=fract(p*vec2(123.34,456.21)); p+=dot(p,p+45.32); return fract(p.x*p.y); }
+      float noise(vec2 p){
+        vec2 i=floor(p), f=fract(p);
+        float a=hash(i), b=hash(i+vec2(1.,0.)), c=hash(i+vec2(0.,1.)), d=hash(i+vec2(1.,1.));
+        vec2 u=f*f*(3.-2.*f);
+        return mix(a,b,u.x) + (c-a)*u.y*(1.-u.x) + (d-b)*u.x*u.y;
+      }
+      float fbm(vec2 p){ float v=0.,a=0.5; for(int i=0;i<6;i++){ v+=a*noise(p); p*=2.; a*=0.5; } return v; }
+      void main(){
+        vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+        uv.x *= u_resolution.x / u_resolution.y;
+        vec2 mPos = u_mouse / u_resolution.xy;
+        mPos.x *= u_resolution.x / u_resolution.y;
+        float dist = distance(uv, mPos);
+        vec2 q = vec2(0.);
+        q.x = fbm(uv + 0.07*u_time);
+        q.y = fbm(uv + vec2(1.,1.));
+        vec2 r = vec2(0.);
+        r.x = fbm(uv + 1.0*q + vec2(1.7,9.2) + 0.15*u_time);
+        r.y = fbm(uv + 1.0*q + vec2(8.3,2.8) + 0.126*u_time);
+        float f = fbm(uv + r);
+        vec3 baseColor = vec3(0.055, 0.058, 0.071);
+        vec3 mistColor = vec3(0.165, 0.140, 0.255);
+        vec3 accent    = vec3(0.310, 0.230, 0.485);
+        vec3 color = mix(baseColor, mistColor, f);
+        color = mix(color, accent, dot(q,r) * 0.55);
+        float glow = smoothstep(0.4, 0.0, dist);
+        color += glow * 0.06 * vec3(0.62, 0.50, 0.95);
+        color = pow(color, vec3(0.92)) * 1.35;
+        gl_FragColor = vec4(color, 1.0);
+      }
+    `;
+    function compile(type, src){
+      const s = gl.createShader(type);
+      gl.shaderSource(s, src); gl.compileShader(s);
+      if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) { console.error(gl.getShaderInfoLog(s)); return null; }
+      return s;
+    }
+    const vs = compile(gl.VERTEX_SHADER, VERT);
+    const fs = compile(gl.FRAGMENT_SHADER, FRAG);
+    if (!vs || !fs) return;
+    const prog = gl.createProgram();
+    gl.attachShader(prog, vs); gl.attachShader(prog, fs); gl.linkProgram(prog);
+    gl.useProgram(prog);
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]), gl.STATIC_DRAW);
+    const loc = gl.getAttribLocation(prog, 'position');
+    gl.enableVertexAttribArray(loc);
+    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+    const uTime = gl.getUniformLocation(prog, 'u_time');
+    const uRes  = gl.getUniformLocation(prog, 'u_resolution');
+    const uMouse= gl.getUniformLocation(prog, 'u_mouse');
+    const mouse = { x: window.innerWidth/2, y: window.innerHeight/2 };
+    window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = window.innerHeight - e.clientY; });
+    function frame(t){
+      if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight){
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+        gl.viewport(0, 0, canvas.width, canvas.height);
+      }
+      gl.clearColor(0.055, 0.058, 0.071, 1.0); gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.uniform1f(uTime, t * 0.001);
+      gl.uniform2f(uRes, canvas.width, canvas.height);
+      gl.uniform2f(uMouse, mouse.x, mouse.y);
+      gl.drawArrays(gl.TRIANGLES, 0, 6);
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  })();
+</script>
+</body>
+</html>

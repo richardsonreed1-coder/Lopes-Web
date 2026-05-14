@@ -19,7 +19,8 @@
   h1 { font-family: 'Fraunces', serif; font-weight: 400; font-size: clamp(48px, 7vw, 96px); line-height: 1; letter-spacing: -0.03em; margin-bottom: 24px; }
   h1 em { color: var(--purple); font-style: italic; }
   .lede { font-size: 18px; line-height: 1.55; max-width: 56ch; color: rgba(0,0,0,0.7); margin-bottom: 72px; }
-  .picks { display:grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+  .picks { display:grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+  @media(max-width:1100px){ .picks{grid-template-columns:1fr 1fr;} }
   @media(max-width:800px){ .picks{grid-template-columns:1fr;} main{padding:48px 24px;} .nav{padding:24px;} }
   .pick { display:block; padding: 40px; background: var(--black); color: var(--paper); text-decoration:none; border: 1px solid var(--black); position: relative; overflow: hidden; transition: transform 0.4s cubic-bezier(.2,.8,.2,1); }
   .pick:hover { transform: translate(-4px,-4px); box-shadow: 8px 8px 0 var(--purple); }
@@ -54,6 +55,13 @@
       <div class="pick-title">Press</div>
       <div class="pick-meta">Stacked ledger · Editorial brutalism</div>
       <div class="pick-desc">Each operating category rendered as a physical ledger volume. The work IS the navigation. Stripe Press energy applied to a multi-family office — every property has a spine you can read.</div>
+    </a>
+    <a class="pick" href="./fog.html">
+      <div class="pick-arrow">→</div>
+      <div class="pick-num">MOCKUP 03 / REF: LOPES-FOG</div>
+      <div class="pick-title">Fog</div>
+      <div class="pick-meta">Atmospheric mist · Quiet capital</div>
+      <div class="pick-desc">A WebGL mist hero with a serif italic wordmark and a single counter card. Tight port of the Lopes-Fog reference — quiet, slow, signed. Quietest of the three. Built for the volumes to do the talking.</div>
     </a>
   </div>
 </main>

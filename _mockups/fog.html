@@ -19,7 +19,12 @@
     --purple: #7A4FD9;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { background: #0E0F12; }
+  html {
+    background:
+      radial-gradient(60% 60% at 18% 22%, rgba(80, 40, 160, 0.32) 0%, transparent 60%),
+      radial-gradient(70% 70% at 82% 78%, rgba(45, 51, 69, 0.55) 0%, transparent 65%),
+      #0E0F12;
+  }
   body {
     color: var(--text);
     font-family: 'Inter', system-ui, sans-serif;
@@ -76,6 +81,7 @@
   nav.top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 48px; }
   @media (min-width: 768px) { nav.top { margin-bottom: 96px; } }
   .brand { font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase; font-weight: 600; }
+  .brand b { color: var(--purple); font-weight: 700; }
   @media (min-width: 768px) { .brand { font-size: 12px; } }
   .navlinks { display: none; gap: 40px; font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; opacity: 0.6; }
   @media (min-width: 768px) { .navlinks { display: flex; } }
@@ -98,8 +104,8 @@
     to   { opacity: 1; transform: translateX(0); }
   }
   .hero-status { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
-  .hero-status .line { height: 1px; width: 48px; background: rgba(255,255,255,0.3); }
-  .hero-status .label { font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.5; }
+  .hero-status .line { height: 1px; width: 48px; background: linear-gradient(90deg, rgba(122,79,217,0.7), rgba(255,255,255,0.0)); }
+  .hero-status .label { font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; opacity: 0.55; color: var(--purple); }
   @media (min-width: 768px) { .hero-status .label { font-size: 11px; } }
 
   h1.title {
@@ -113,7 +119,7 @@
   }
   @media (min-width: 640px) { h1.title { font-size: 84px; } }
   @media (min-width: 1024px){ h1.title { font-size: 110px; } }
-  h1.title .indent { display: inline-block; margin-left: 48px; }
+  h1.title .indent { display: inline-block; margin-left: 48px; color: var(--purple); }
   @media (min-width: 768px) { h1.title .indent { margin-left: 64px; } }
 
   .lede {
@@ -304,7 +310,7 @@
     font-style: italic;
     font-size: 32px;
     line-height: 1;
-    color: rgba(255,255,255,0.9);
+    color: var(--purple);
   }
   @media (min-width: 768px) { .section-index .big { font-size: 42px; } }
   .section-index .lbl {
@@ -348,7 +354,7 @@
   <!-- content -->
   <div class="content">
     <nav class="top">
-      <div class="brand">Lopes / Capital</div>
+      <div class="brand"><b>Lopes</b> / Capital</div>
       <div class="navlinks">
         <a href="#">Volumes</a>
         <a href="#">Operators</a>

@@ -46,7 +46,7 @@ export default function FogPage() {
             id="brand-logo"
             className="text-[10px] md:text-xs tracking-[0.4em] uppercase font-semibold"
           >
-            Lopes / Capital
+            <b className="font-bold text-[#5028A0]">Lopes</b> / Capital
           </div>
           <div
             id="nav-links"
@@ -79,10 +79,13 @@ export default function FogPage() {
             className="flex flex-col items-start"
           >
             <div id="hero-status" className="mb-6 flex items-center gap-4">
-              <span id="line-indicator" className="h-[1px] w-12 bg-white/30" />
+              <span
+                id="line-indicator"
+                className="h-[1px] w-12 bg-gradient-to-r from-[#5028A0]/70 to-transparent"
+              />
               <span
                 id="status-label"
-                className="text-[10px] md:text-[11px] tracking-[0.3em] uppercase opacity-50"
+                className="text-[10px] md:text-[11px] tracking-[0.3em] uppercase text-[#5028A0]/80"
               >
                 Volume IX · MMXXVI
               </span>
@@ -93,7 +96,7 @@ export default function FogPage() {
               className="text-[64px] sm:text-[84px] lg:text-[110px] leading-[0.9] font-serif italic mb-8 -ml-1"
             >
               Quiet <br />
-              <span className="ml-12 md:ml-16">Capital.</span>
+              <span className="ml-12 md:ml-16 text-[#5028A0]">Capital.</span>
             </h1>
 
             <p
@@ -200,7 +203,7 @@ export default function FogPage() {
             id="section-index"
             className="text-right self-end md:self-auto"
           >
-            <div className="text-[32px] md:text-[42px] font-serif italic leading-none text-white/90">
+            <div className="text-[32px] md:text-[42px] font-serif italic leading-none text-[#5028A0]">
               IX
             </div>
             <div className="text-[8px] md:text-[9px] tracking-[0.2em] uppercase opacity-40 mt-1">

@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   LineChart,
@@ -17,6 +18,23 @@ import {
 } from "lucide-react";
 import { MistBackground, type FogPalette } from "@/components/mist-background";
 import { CurtainLink } from "@/components/curtain-link";
+
+// Roman numerals for the live date eyebrow.
+function toRoman(n: number): string {
+  const map: [number, string][] = [
+    [1000, "M"], [900, "CM"], [500, "D"], [400, "CD"],
+    [100, "C"], [90, "XC"], [50, "L"], [40, "XL"],
+    [10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"],
+  ];
+  let out = "";
+  let r = n;
+  for (const [v, s] of map) {
+    while (r >= v) { out += s; r -= v; }
+  }
+  return out;
+}
+
+const MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 
 // Obsidian fog — near-black base, electric violet accent.
 const OBSIDIAN_FOG: FogPalette = {
@@ -65,6 +83,16 @@ const PILLAR_NAV = [
 ];
 
 export default function HomePage() {
+  // Live date, formatted to match the Roman-numeral aesthetic.
+  // Render empty on SSR, fill on mount to avoid hydration mismatch.
+  const [dateline, setDateline] = useState("");
+  useEffect(() => {
+    const now = new Date();
+    setDateline(
+      `${toRoman(now.getDate())} · ${MONTHS[now.getMonth()]} · ${toRoman(now.getFullYear())}`
+    );
+  }, []);
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-ink py-12 px-8 md:px-12 lg:px-16">
       {/* SVG filters: refraction at perimeter */}
@@ -110,8 +138,11 @@ export default function HomePage() {
 
         {/* HEADER */}
         <div className="mb-10">
-          <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-purple-2">
-            Volume IX · MMXXVI
+          <div
+            suppressHydrationWarning
+            className="font-mono text-[10px] uppercase tracking-[0.3em] text-purple-2"
+          >
+            {dateline || " "}
           </div>
           <h1 className="mt-4 font-display text-[clamp(36px,5vw,56px)] font-normal leading-[1.02] tracking-[-0.02em] text-paper">
             The Lopes{" "}

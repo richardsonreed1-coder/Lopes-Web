@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import {
   LineChart,
@@ -19,62 +18,16 @@ import {
 import { MistBackground, type FogPalette } from "@/components/mist-background";
 import { CurtainLink } from "@/components/curtain-link";
 
-// ---------------------------------------------------------------
-// FOG PALETTES — toggle the WebGL backdrop without re-mounting.
-// ---------------------------------------------------------------
-
-type FogVariant = {
-  key: string;
-  label: string;
-  blurb: string;
-  swatch: string[];
-  palette: FogPalette;
+// Obsidian fog — near-black base, electric violet accent.
+const OBSIDIAN_FOG: FogPalette = {
+  base: [0.022, 0.025, 0.035],
+  mist: [0.1, 0.06, 0.18],
+  accent: [0.48, 0.31, 0.85],
+  glow: [0.78, 0.55, 1.0],
+  speed: 1.15,
+  turbulence: 1.4,
+  brightness: 1.45,
 };
-
-const FOG_VARIANTS: FogVariant[] = [
-  {
-    key: "purple",
-    label: "Purple Ink",
-    blurb: "Deep ink base, muted purple mist, purple-2 accent. The Lopes voice.",
-    swatch: ["#1A1B22", "#2A2440", "#5028A0"],
-    palette: { base: [0.055, 0.058, 0.071], mist: [0.165, 0.14, 0.255], accent: [0.31, 0.23, 0.485], glow: [0.62, 0.5, 0.95], speed: 1.0, turbulence: 1.0, brightness: 1.35 },
-  },
-  {
-    key: "embers",
-    label: "Embers",
-    blurb: "Warm — oxblood base, amber mist, gold accent. Firelight through smoke.",
-    swatch: ["#1F0E0B", "#2F1810", "#8C5A1F"],
-    palette: { base: [0.07, 0.04, 0.035], mist: [0.22, 0.12, 0.08], accent: [0.55, 0.32, 0.12], glow: [0.95, 0.7, 0.35], speed: 0.85, turbulence: 1.1, brightness: 1.3 },
-  },
-  {
-    key: "steel",
-    label: "Steel Dawn",
-    blurb: "Cool — slate base, dusty blue mist, cyan accent. Dawn fog over water.",
-    swatch: ["#0F141A", "#1B2838", "#3B6B8E"],
-    palette: { base: [0.05, 0.06, 0.075], mist: [0.11, 0.16, 0.22], accent: [0.22, 0.42, 0.55], glow: [0.55, 0.75, 0.95], speed: 0.9, turbulence: 0.9, brightness: 1.4 },
-  },
-  {
-    key: "aurora",
-    label: "Aurora",
-    blurb: "Multi-hue — teal base, violet mist, lime accent. Cool/warm tension.",
-    swatch: ["#0A1A1C", "#1D1838", "#3D8C70"],
-    palette: { base: [0.04, 0.06, 0.08], mist: [0.12, 0.1, 0.22], accent: [0.18, 0.45, 0.4], glow: [0.4, 0.95, 0.65], speed: 1.1, turbulence: 1.25, brightness: 1.4 },
-  },
-  {
-    key: "ash",
-    label: "Ash",
-    blurb: "Monochrome — pure greyscale, slow drift, low contrast.",
-    swatch: ["#101012", "#1F1F22", "#3A3A3F"],
-    palette: { base: [0.06, 0.06, 0.065], mist: [0.13, 0.13, 0.14], accent: [0.28, 0.28, 0.3], glow: [0.85, 0.85, 0.88], speed: 0.6, turbulence: 0.85, brightness: 1.3 },
-  },
-  {
-    key: "obsidian",
-    label: "Obsidian",
-    blurb: "High-contrast — near-black base, electric violet accent.",
-    swatch: ["#06070A", "#1A0F2A", "#7A4FD9"],
-    palette: { base: [0.022, 0.025, 0.035], mist: [0.1, 0.06, 0.18], accent: [0.48, 0.31, 0.85], glow: [0.78, 0.55, 1.0], speed: 1.15, turbulence: 1.4, brightness: 1.45 },
-  },
-];
 
 // ---------------------------------------------------------------
 // TILES — the 10 doors. Each carries its accent so the curtain
@@ -112,8 +65,6 @@ const PILLAR_NAV = [
 ];
 
 export default function HomePage() {
-  const [active, setActive] = useState(FOG_VARIANTS[0]);
-
   return (
     <div className="relative min-h-screen overflow-hidden bg-ink py-12 px-8 md:px-12 lg:px-16">
       {/* SVG filters: refraction at perimeter */}
@@ -126,7 +77,7 @@ export default function HomePage() {
         </defs>
       </svg>
 
-      <MistBackground palette={active.palette} />
+      <MistBackground palette={OBSIDIAN_FOG} />
       <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden opacity-30">
         <div className="absolute -left-[10%] -top-[10%] h-[60%] w-[60%] rounded-full bg-[#1A1B22] blur-[120px]" />
         <div className="absolute -bottom-[20%] -right-[10%] h-[70%] w-[70%] rounded-full bg-[#3a2d55] blur-[140px]" />
@@ -158,57 +109,14 @@ export default function HomePage() {
         </nav>
 
         {/* HEADER */}
-        <div className="mb-10 flex flex-wrap items-end justify-between gap-6">
-          <div>
-            <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-purple-2">
-              Volume IX · MMXXVI
-            </div>
-            <h1 className="mt-4 font-display text-[clamp(36px,5vw,56px)] font-normal leading-[1.02] tracking-[-0.02em] text-paper">
-              Ten doors,{" "}
-              <em className="italic font-medium text-purple-2">one ledger</em>.
-            </h1>
+        <div className="mb-10">
+          <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-purple-2">
+            Volume IX · MMXXVI
           </div>
-
-          {/* FOG PICKER */}
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="mr-1 font-mono text-[9px] uppercase tracking-[0.25em] text-paper/40">
-              Fog
-            </span>
-            {FOG_VARIANTS.map((v) => {
-              const isActive = v.key === active.key;
-              return (
-                <button
-                  key={v.key}
-                  type="button"
-                  onClick={() => setActive(v)}
-                  aria-label={`Use ${v.label} fog`}
-                  title={`${v.label} — ${v.blurb}`}
-                  className={`flex items-center gap-1.5 rounded-full border px-2.5 py-1.5 backdrop-blur-md transition-colors ${
-                    isActive
-                      ? "border-paper/40 bg-paper/[0.08]"
-                      : "border-paper/12 bg-paper/[0.02] hover:border-paper/25 hover:bg-paper/[0.05]"
-                  }`}
-                >
-                  <span className="flex gap-0.5">
-                    {v.swatch.map((c, i) => (
-                      <span
-                        key={i}
-                        className="h-3 w-1.5 rounded-sm ring-1 ring-paper/10"
-                        style={{ background: c }}
-                      />
-                    ))}
-                  </span>
-                  <span
-                    className={`font-mono text-[9px] uppercase tracking-[0.22em] ${
-                      isActive ? "text-paper" : "text-paper/55"
-                    }`}
-                  >
-                    {v.label}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+          <h1 className="mt-4 font-display text-[clamp(36px,5vw,56px)] font-normal leading-[1.02] tracking-[-0.02em] text-paper">
+            Ten doors,{" "}
+            <em className="italic font-medium text-purple-2">one ledger</em>.
+          </h1>
         </div>
 
         {/* TILE GRID */}
@@ -222,7 +130,7 @@ export default function HomePage() {
         <footer className="mt-20 flex flex-col items-start justify-between gap-3 border-t border-paper/10 pt-6 font-mono text-[10px] uppercase tracking-[0.25em] text-paper/45 md:flex-row md:items-center">
           <span>Lopes Capital · Operators since 2017</span>
           <span>Scottsdale · Arizona</span>
-          <span>{active.label} · Vol. IX</span>
+          <span>Obsidian · Vol. IX</span>
         </footer>
       </div>
 

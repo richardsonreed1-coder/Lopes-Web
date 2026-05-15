@@ -114,8 +114,8 @@ export default function HomePage() {
             Volume IX · MMXXVI
           </div>
           <h1 className="mt-4 font-display text-[clamp(36px,5vw,56px)] font-normal leading-[1.02] tracking-[-0.02em] text-paper">
-            Funding the{" "}
-            <em className="italic font-medium text-purple-2">intelligent transition</em>.
+            The Lopes{" "}
+            <em className="italic font-medium text-purple-2">Architecture</em>.
           </h1>
         </div>
 

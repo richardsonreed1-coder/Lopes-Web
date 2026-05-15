@@ -1,5 +1,5 @@
-import Link from "next/link";
 import { type Pillar, pillars } from "@/lib/content";
+import { CurtainLink } from "@/components/curtain-link";
 
 export function PillarPage({ pillar }: { pillar: Pillar }) {
   const others = pillars.filter((p) => p.slug !== pillar.slug);
@@ -27,23 +27,27 @@ export function PillarPage({ pillar }: { pillar: Pillar }) {
         {/* CLASSIFIED STRIP */}
         <header className="border-b border-rule px-6 py-4 md:px-10">
           <div className="mx-auto flex max-w-[1180px] items-center justify-between">
-            <Link
+            <CurtainLink
               href="/"
+              accent="#7A4FD9"
+              label="Returning to hub"
               className="text-[10px] uppercase tracking-[0.25em] text-paper-mute transition-colors hover:text-paper"
             >
               ← Lopes Capital
-            </Link>
+            </CurtainLink>
             <div className="hidden items-center gap-6 text-[10px] uppercase tracking-[0.25em] text-paper-mute md:flex">
               {pillars.map((p) => (
-                <Link
+                <CurtainLink
                   key={p.slug}
                   href={`/${p.slug}`}
+                  accent="#5028A0"
+                  label={`Opening ${p.word.toLowerCase()}`}
                   className={`transition-colors hover:text-paper ${
                     p.slug === pillar.slug ? "text-paper" : ""
                   }`}
                 >
                   {p.word}
-                </Link>
+                </CurtainLink>
               ))}
             </div>
             <div className="text-[10px] uppercase tracking-[0.25em] text-paper-mute">
@@ -119,9 +123,11 @@ export function PillarPage({ pillar }: { pillar: Pillar }) {
             </h2>
             <div className="mt-10 divide-y divide-rule-soft rounded-sm border border-rule bg-ink-2">
               {others.map((p) => (
-                <Link
+                <CurtainLink
                   key={p.slug}
                   href={`/${p.slug}`}
+                  accent="#5028A0"
+                  label={`Opening ${p.word.toLowerCase()}`}
                   className="group grid grid-cols-[80px_1fr_auto] items-center gap-6 px-5 py-5 transition-colors hover:bg-ink"
                 >
                   <span className="font-display text-[20px] italic text-paper/65">
@@ -139,7 +145,7 @@ export function PillarPage({ pillar }: { pillar: Pillar }) {
                   <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-paper-mute transition-all duration-300 group-hover:translate-x-1 group-hover:text-paper">
                     Open →
                   </span>
-                </Link>
+                </CurtainLink>
               ))}
             </div>
           </div>
@@ -151,9 +157,9 @@ export function PillarPage({ pillar }: { pillar: Pillar }) {
             <span>
               File hash · 0x{pillar.word.toUpperCase().slice(0, 6)}-{pillar.numeral}
             </span>
-            <Link href="/" className="transition-colors hover:text-paper">
+            <CurtainLink href="/" accent="#7A4FD9" label="Returning to hub" className="transition-colors hover:text-paper">
               ← Lopes Capital
-            </Link>
+            </CurtainLink>
           </div>
         </footer>
       </div>

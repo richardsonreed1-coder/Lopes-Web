@@ -14,6 +14,13 @@ const FRAG = `
   uniform float u_time;
   uniform vec2 u_resolution;
   uniform vec2 u_mouse;
+  uniform vec3 u_base;
+  uniform vec3 u_mist;
+  uniform vec3 u_accent;
+  uniform vec3 u_glow;
+  uniform float u_speed;
+  uniform float u_turbulence;
+  uniform float u_brightness;
 
   float hash(vec2 p) {
     p = fract(p * vec2(123.34, 456.21));
@@ -51,34 +58,64 @@ const FRAG = `
     mPos.x *= u_resolution.x / u_resolution.y;
     float dist = distance(uv, mPos);
 
+    float t = u_time * u_speed;
+
     vec2 q = vec2(0.0);
-    q.x = fbm(uv + 0.07 * u_time);
+    q.x = fbm(uv + 0.07 * t);
     q.y = fbm(uv + vec2(1.0, 1.0));
 
     vec2 r = vec2(0.0);
-    r.x = fbm(uv + 1.0 * q + vec2(1.7, 9.2) + 0.15 * u_time);
-    r.y = fbm(uv + 1.0 * q + vec2(8.3, 2.8) + 0.126 * u_time);
+    r.x = fbm(uv + u_turbulence * q + vec2(1.7, 9.2) + 0.15 * t);
+    r.y = fbm(uv + u_turbulence * q + vec2(8.3, 2.8) + 0.126 * t);
 
     float f = fbm(uv + r);
 
-    // Lopes ink palette — deep purple-ink mist
-    vec3 baseColor = vec3(0.055, 0.058, 0.071);   // ink #0E0F12 region
-    vec3 mistColor = vec3(0.165, 0.140, 0.255);   // muted purple
-    vec3 accentColor = vec3(0.310, 0.230, 0.485); // purple-2 wash
-
-    vec3 color = mix(baseColor, mistColor, f);
-    color = mix(color, accentColor, dot(q, r) * 0.55);
+    vec3 color = mix(u_base, u_mist, f);
+    color = mix(color, u_accent, dot(q, r) * 0.55);
 
     float mouseGlow = smoothstep(0.4, 0.0, dist);
-    color += mouseGlow * 0.06 * vec3(0.62, 0.50, 0.95);
+    color += mouseGlow * 0.06 * u_glow;
 
-    color = pow(color, vec3(0.92)) * 1.35;
+    color = pow(color, vec3(0.92)) * u_brightness;
     gl_FragColor = vec4(color, 1.0);
   }
 `;
 
-export function MistBackground() {
+export type FogPalette = {
+  base: [number, number, number];
+  mist: [number, number, number];
+  accent: [number, number, number];
+  glow: [number, number, number];
+  /** time multiplier; 1.0 = current speed */
+  speed?: number;
+  /** how much q distorts r — higher = more swirl */
+  turbulence?: number;
+  /** final multiplier on color */
+  brightness?: number;
+};
+
+const DEFAULT_PALETTE: Required<FogPalette> = {
+  base: [0.055, 0.058, 0.071],
+  mist: [0.165, 0.14, 0.255],
+  accent: [0.31, 0.23, 0.485],
+  glow: [0.62, 0.5, 0.95],
+  speed: 1.0,
+  turbulence: 1.0,
+  brightness: 1.35,
+};
+
+export function MistBackground({ palette }: { palette?: FogPalette } = {}) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  // hold the latest palette in a ref so the rAF loop can read it without
+  // tearing down WebGL on prop change
+  const paletteRef = useRef<Required<FogPalette>>({
+    ...DEFAULT_PALETTE,
+    ...palette,
+  });
+
+  useEffect(() => {
+    paletteRef.current = { ...DEFAULT_PALETTE, ...palette };
+  }, [palette]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -126,6 +163,13 @@ export function MistBackground() {
     const timeLoc = gl.getUniformLocation(program, "u_time");
     const resLoc = gl.getUniformLocation(program, "u_resolution");
     const mouseLoc = gl.getUniformLocation(program, "u_mouse");
+    const baseLoc = gl.getUniformLocation(program, "u_base");
+    const mistLoc = gl.getUniformLocation(program, "u_mist");
+    const accentLoc = gl.getUniformLocation(program, "u_accent");
+    const glowLoc = gl.getUniformLocation(program, "u_glow");
+    const speedLoc = gl.getUniformLocation(program, "u_speed");
+    const turbulenceLoc = gl.getUniformLocation(program, "u_turbulence");
+    const brightnessLoc = gl.getUniformLocation(program, "u_brightness");
 
     const mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
     const onMove = (e: MouseEvent) => {
@@ -141,12 +185,20 @@ export function MistBackground() {
         canvas.height = window.innerHeight;
         gl.viewport(0, 0, canvas.width, canvas.height);
       }
-      gl.clearColor(0.055, 0.058, 0.071, 1.0);
+      const p = paletteRef.current;
+      gl.clearColor(p.base[0], p.base[1], p.base[2], 1.0);
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.useProgram(program);
       gl.uniform1f(timeLoc, t * 0.001);
       gl.uniform2f(resLoc, canvas.width, canvas.height);
       gl.uniform2f(mouseLoc, mouse.x, mouse.y);
+      gl.uniform3f(baseLoc, p.base[0], p.base[1], p.base[2]);
+      gl.uniform3f(mistLoc, p.mist[0], p.mist[1], p.mist[2]);
+      gl.uniform3f(accentLoc, p.accent[0], p.accent[1], p.accent[2]);
+      gl.uniform3f(glowLoc, p.glow[0], p.glow[1], p.glow[2]);
+      gl.uniform1f(speedLoc, p.speed);
+      gl.uniform1f(turbulenceLoc, p.turbulence);
+      gl.uniform1f(brightnessLoc, p.brightness);
       gl.drawArrays(gl.TRIANGLES, 0, 6);
       raf = requestAnimationFrame(render);
     };

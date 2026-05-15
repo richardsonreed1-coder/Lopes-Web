@@ -2,6 +2,21 @@ export type LedgerColor = "purple" | "gold" | "burgundy" | "teal" | "olive" | "p
 
 export type TimelineEntry = { year: string; note: string };
 
+export type Position = { label: string; description?: string };
+
+export type Stat = { label: string; value: string };
+
+/** WebGL fog palette for the per-sector backdrop. Mirrors components/mist-background FogPalette. */
+export type SectorFog = {
+  base: [number, number, number];
+  mist: [number, number, number];
+  accent: [number, number, number];
+  glow: [number, number, number];
+  speed?: number;
+  turbulence?: number;
+  brightness?: number;
+};
+
 export type Ledger = {
   vol: string;
   slug: string;
@@ -13,8 +28,14 @@ export type Ledger = {
   thesis?: string;
   strategy?: string;
   investments?: string;
-  positions: string[];
+  positions: Position[];
   color: LedgerColor;
+  /** CSS color for the italic accent word in the headline + small-cap eyebrows */
+  accent?: string;
+  /** WebGL fog palette for this sector's page */
+  fog?: SectorFog;
+  /** Quick stats grid below the hero */
+  stats?: Stat[];
   timeline?: TimelineEntry[];
 };
 
@@ -47,8 +68,45 @@ export const ledgers: Ledger[] = [
       "We deploy capital through quantitative and fundamental strategies designed specifically to exploit these structural dislocations. We prioritize building unconventional data pipelines and signal extraction frameworks to capture pricing inefficiencies before they reach the broader market.",
     investments:
       "Algorithmic trading desks, alternative data architecture, and specialized liquidity providers.",
-    positions: ["Algo desks", "Alt-data", "Liquidity", "Signal extraction"],
+    positions: [
+      {
+        label: "Algo desks",
+        description:
+          "Discretionary mandate + event-driven desk. Pencil-down on every position; nothing handed off.",
+      },
+      {
+        label: "Alt-data",
+        description:
+          "Proprietary pipelines — credit-card panels, satellite, hiring, footfall — feeding the signal extraction layer.",
+      },
+      {
+        label: "Liquidity",
+        description:
+          "Specialized liquidity providers in markets where size moves price. Patient sizing, not blasting.",
+      },
+      {
+        label: "Signal extraction",
+        description:
+          "The signals engine, live 2025. Where the alt-data, the macro read, and the desk meet.",
+      },
+    ],
     color: "purple",
+    accent: "#A988F5",
+    fog: {
+      base: [0.055, 0.058, 0.071],
+      mist: [0.165, 0.14, 0.255],
+      accent: [0.31, 0.23, 0.485],
+      glow: [0.62, 0.5, 0.95],
+      speed: 1.0,
+      turbulence: 1.0,
+      brightness: 1.35,
+    },
+    stats: [
+      { label: "Sleeves", value: "04" },
+      { label: "Year live", value: "2017" },
+      { label: "Public sleeve", value: "2019" },
+      { label: "Signals engine", value: "2025" },
+    ],
     timeline: [
       { year: "2017", note: "Discretionary mandate opened" },
       { year: "2019", note: "Public sleeve activated" },
@@ -71,8 +129,45 @@ export const ledgers: Ledger[] = [
       "We acquire functionally obsolete retail and commercial buildings well below replacement cost, converting them into climate-controlled self-storage operated by CubeSmart. Our edge is structural: an unrecreatable cost basis, faster stabilization than ground-up development, and regulatory moats in zoning-restricted submarkets. We hold indefinitely, refinancing into permanent debt to compound the playbook across the Sunbelt.",
     investments:
       "Adaptive-reuse self-storage, obsolete commercial conversions, and inflation-resilient, low-operational-drag hard assets.",
-    positions: ["Adaptive-reuse", "Self-storage", "Conversions", "Sunbelt"],
+    positions: [
+      {
+        label: "Adaptive-reuse",
+        description:
+          "Functionally obsolete commercial buildings, acquired below replacement cost, converted to climate-controlled storage.",
+      },
+      {
+        label: "Self-storage",
+        description:
+          "CubeSmart-operated, climate-controlled. Faster stabilization than ground-up; regulatory moats in zoning-restricted submarkets.",
+      },
+      {
+        label: "Conversions",
+        description:
+          "Retail and commercial structures retrofitted. The cost basis isn't recreatable.",
+      },
+      {
+        label: "Sunbelt",
+        description:
+          "Permanent debt, indefinite hold, compounding playbook across high-migration corridors.",
+      },
+    ],
     color: "gold",
+    accent: "#E5A52B",
+    fog: {
+      base: [0.07, 0.04, 0.035],
+      mist: [0.22, 0.12, 0.08],
+      accent: [0.55, 0.32, 0.12],
+      glow: [0.95, 0.7, 0.35],
+      speed: 0.85,
+      turbulence: 1.1,
+      brightness: 1.3,
+    },
+    stats: [
+      { label: "Sleeves", value: "04" },
+      { label: "First deal", value: "2019" },
+      { label: "Sunbelt expansion", value: "2023" },
+      { label: "Portfolio status", value: "Live" },
+    ],
     timeline: [
       { year: "2019", note: "First storage acquisition" },
       { year: "2021", note: "Martone datacenter partnership" },
@@ -95,8 +190,45 @@ export const ledgers: Ledger[] = [
       "We are building and investing in the definitive K-20 infrastructure required to support this new, decentralized ecosystem. By deploying the platform technology, family advisory frameworks, and operational backbone, we are actively structuring the foundation that will drive outcomes for the next generation of Americans.",
     investments:
       "K-20 adaptive learning infrastructure, localized microschool networks, specialized private operators, and family advisory platforms.",
-    positions: ["K-20 platform", "Microschools", "Private operators", "Family advisory"],
+    positions: [
+      {
+        label: "K-20 platform",
+        description:
+          "Adaptive learning infrastructure for the decentralized future. Personalized at scale, mature with the student.",
+      },
+      {
+        label: "Microschools",
+        description:
+          "Localized networks of small private schools. Brick-and-mortar with platform-level operations underneath.",
+      },
+      {
+        label: "Private operators",
+        description:
+          "Specialized providers in select brick-and-mortar formats. Selective stake or full operating role.",
+      },
+      {
+        label: "Family advisory",
+        description:
+          "Direct consumer-facing layer. Tools, frameworks, and concierge for families navigating the new ecosystem.",
+      },
+    ],
     color: "burgundy",
+    accent: "#E64A58",
+    fog: {
+      base: [0.08, 0.04, 0.05],
+      mist: [0.22, 0.1, 0.13],
+      accent: [0.55, 0.2, 0.27],
+      glow: [0.95, 0.45, 0.55],
+      speed: 0.9,
+      turbulence: 1.0,
+      brightness: 1.32,
+    },
+    stats: [
+      { label: "Sleeves", value: "04" },
+      { label: "Founded (GCU)", value: "2003" },
+      { label: "GCU exit", value: "2018" },
+      { label: "K-20 live", value: "2023" },
+    ],
     timeline: [
       { year: "2003", note: "Grand Canyon University acquired" },
       { year: "2018", note: "Exit as #1 private Christian university" },
@@ -119,8 +251,45 @@ export const ledgers: Ledger[] = [
       "We back specialist-led platforms in neurodevelopmental and functional health where clinical authority, consumer acquisition, and operating infrastructure are designed to compound into a single moat. The hub holds the IP and the protocol; the spokes deliver care, train practitioners, and acquire the families who become the evidence base. Capital is patient and operationally engaged — these are systems built to last decades, not exits to engineer.",
     investments:
       "Specialist-anchored clinical platforms; direct-to-patient brands that feed into clinical infrastructure; practitioner certification and protocol-delivery software layers; selective positioning in adjacent verticals where the same architecture extends.",
-    positions: ["Clinical platforms", "DTC funnel", "Protocol IP", "Practitioner network"],
+    positions: [
+      {
+        label: "Clinical platforms",
+        description:
+          "Specialist-led platforms in neuro and functional health. Clinical authority compounds into a single moat.",
+      },
+      {
+        label: "DTC funnel",
+        description:
+          "Direct-to-patient brands feeding the clinical infrastructure. Acquisition is the patient relationship.",
+      },
+      {
+        label: "Protocol IP",
+        description:
+          "The intellectual property layer. Protocols and certification owned at the hub, not licensed.",
+      },
+      {
+        label: "Practitioner network",
+        description:
+          "The spokes that deliver care, train other practitioners, and grow the evidence base.",
+      },
+    ],
     color: "teal",
+    accent: "#5BB8C0",
+    fog: {
+      base: [0.04, 0.07, 0.08],
+      mist: [0.1, 0.18, 0.2],
+      accent: [0.18, 0.45, 0.5],
+      glow: [0.45, 0.85, 0.9],
+      speed: 0.95,
+      turbulence: 0.95,
+      brightness: 1.38,
+    },
+    stats: [
+      { label: "Sleeves", value: "04" },
+      { label: "Hub formed", value: "2022" },
+      { label: "First clinical", value: "2023" },
+      { label: "At scale", value: "2025" },
+    ],
     timeline: [
       { year: "2022", note: "Neuro brand hub formed" },
       { year: "2023", note: "First clinical sub-property launched" },
@@ -143,8 +312,45 @@ export const ledgers: Ledger[] = [
       "We partner with high-leverage creators and media figures to build vertically integrated businesses. We transition them from algorithmic dependence to sovereign operations — owning the IP, the direct distribution layer, and the physical backend fulfillment.",
     investments:
       "Creator-led commerce platforms, independent media syndicates, and dedicated fulfillment and supply chain infrastructure.",
-    positions: ["Creator commerce", "Media syndicates", "Owned IP", "Fulfillment"],
+    positions: [
+      {
+        label: "Creator commerce",
+        description:
+          "High-leverage creators with vertically integrated commerce. Owned IP, owned product, owned distribution.",
+      },
+      {
+        label: "Media syndicates",
+        description:
+          "Independent media operations no longer dependent on rented platforms. Cross-property reach.",
+      },
+      {
+        label: "Owned IP",
+        description:
+          "The product, the brand, the audience relationship — held under the holding company, not licensed out.",
+      },
+      {
+        label: "Fulfillment",
+        description:
+          "Dedicated fulfillment and supply-chain infrastructure. The physical backend behind the creators.",
+      },
+    ],
     color: "olive",
+    accent: "#B7C474",
+    fog: {
+      base: [0.05, 0.07, 0.04],
+      mist: [0.12, 0.18, 0.1],
+      accent: [0.3, 0.45, 0.18],
+      glow: [0.65, 0.9, 0.4],
+      speed: 1.05,
+      turbulence: 1.15,
+      brightness: 1.36,
+    },
+    stats: [
+      { label: "Sleeves", value: "04" },
+      { label: "Holdco formed", value: "2024" },
+      { label: "Stack built", value: "2024" },
+      { label: "Reusable", value: "2026" },
+    ],
     timeline: [
       { year: "2024", note: "Creator DTC holdco formed" },
       { year: "2024", note: "Shared e-commerce stack built" },
@@ -161,7 +367,10 @@ export const ledgers: Ledger[] = [
     meta: "2018 — 2025",
     body:
       "Every year, one letter, signed. Theses, mistakes, and what we did about both. The archive lives below.",
-    positions: ["2018", "2019", "2020", "2021", "2022", "2023", "2024", "2025"],
+    positions: [
+      { label: "2018" }, { label: "2019" }, { label: "2020" }, { label: "2021" },
+      { label: "2022" }, { label: "2023" }, { label: "2024" }, { label: "2025" },
+    ],
     color: "paper",
   },
 ];

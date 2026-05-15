@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fraunces, Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
+import { PageCurtain } from "@/components/page-curtain";
 
 const fraunces = Fraunces({
   variable: "--font-fraunces",
@@ -39,7 +40,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="en"
       className={`${fraunces.variable} ${inter.variable} ${jetbrains.variable} ${spaceGrotesk.variable}`}
     >
-      <body>{children}</body>
+      <body>
+        {children}
+        <PageCurtain />
+      </body>
     </html>
   );
 }

@@ -8,10 +8,10 @@ type Props = {
   uncoverMs: number;
 };
 
-/* ============================================================
- * CHALKBOARD — slate panel slides in horizontally, an eraser
- * sweeps across, then it slides off.
- * ============================================================ */
+/**
+ * Chalkboard — slate panel in a wood frame slides in horizontally,
+ * a felt eraser sweeps across the chalk word, slides off other side.
+ */
 export function ChalkboardCurtain({ phase, coverMs, uncoverMs }: Props) {
   return (
     <motion.div
@@ -24,68 +24,191 @@ export function ChalkboardCurtain({ phase, coverMs, uncoverMs }: Props) {
       }}
       className="fixed inset-0 z-[100] pointer-events-none"
     >
-      {/* Wooden frame */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#6b4a2a] via-[#4a321c] to-[#2a1e10] p-6 md:p-10">
-        {/* Slate */}
+      {/* SVG defs — chalk paint filter for irregular edges */}
+      <svg aria-hidden="true" className="absolute -top-px -left-px h-px w-px">
+        <defs>
+          <filter id="chalk-rough" x="-5%" y="-5%" width="110%" height="110%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="2" seed="3" />
+            <feDisplacementMap in="SourceGraphic" scale="1.8" />
+          </filter>
+        </defs>
+      </svg>
+
+      {/* Wood frame — outer molding */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(135deg, #6e4e2d 0%, #5a3e22 40%, #46301a 80%, #2a1e10 100%)",
+        }}
+      >
+        {/* Wood grain on the frame */}
         <div
-          className="relative h-full w-full overflow-hidden shadow-[inset_0_0_60px_rgba(0,0,0,0.6),inset_0_0_2px_rgba(255,255,255,0.06)]"
+          className="absolute inset-0 opacity-30 mix-blend-overlay pointer-events-none"
+          style={{
+            backgroundImage: `
+              repeating-linear-gradient(0deg,
+                rgba(255,230,180,0.10) 0,
+                rgba(255,230,180,0.10) 1px,
+                transparent 1px, transparent 4px,
+                rgba(0,0,0,0.18) 4px, rgba(0,0,0,0.18) 5px,
+                transparent 5px, transparent 9px,
+                rgba(255,230,180,0.06) 9px, rgba(255,230,180,0.06) 10px,
+                transparent 10px, transparent 14px),
+              radial-gradient(ellipse 200px 6px at 30% 10%, rgba(0,0,0,0.25), transparent),
+              radial-gradient(ellipse 100px 4px at 70% 50%, rgba(0,0,0,0.20), transparent)
+            `,
+          }}
+        />
+        {/* Inner bevel of the frame */}
+        <div className="absolute inset-6 md:inset-10">
+          <div className="absolute inset-0 shadow-[inset_0_2px_4px_rgba(0,0,0,0.6),inset_0_-2px_4px_rgba(255,220,170,0.15)]" />
+        </div>
+      </div>
+
+      {/* Slate inside the frame */}
+      <div className="absolute inset-6 overflow-hidden md:inset-10">
+        <div
+          className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse at 40% 30%, #2e3a35 0%, #1a201d 60%, #0e1311 100%)",
+              "radial-gradient(ellipse at 35% 25%, #2a3530 0%, #1a221e 50%, #0e1311 100%)",
           }}
-        >
-          {/* Chalk dust speckle */}
-          <div
-            className="absolute inset-0 opacity-20 mix-blend-screen pointer-events-none"
-            style={{
-              backgroundImage:
-                "radial-gradient(circle at 30% 70%, rgba(255,255,255,0.15) 0, transparent 50%), radial-gradient(circle at 80% 30%, rgba(255,255,255,0.1) 0, transparent 40%)",
-            }}
-          />
-          {/* Chalk text */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="text-center">
-              <div
-                className="font-display text-[clamp(60px,9vw,140px)] font-normal italic"
-                style={{
-                  color: "rgba(255, 250, 235, 0.92)",
-                  textShadow:
-                    "0 0 12px rgba(255,255,235,0.15), 0 1px 0 rgba(0,0,0,0.4)",
-                }}
-              >
-                Education.
-              </div>
-              <div className="mt-2 font-mono text-[10px] uppercase tracking-[0.5em] text-paper/40">
-                §02 · the new architecture of learning
-              </div>
-            </div>
-          </div>
+        />
+        {/* Slate texture — subtle uneven grain */}
+        <div
+          className="absolute inset-0 opacity-25 mix-blend-overlay pointer-events-none"
+          style={{
+            backgroundImage:
+              "radial-gradient(rgba(255,255,255,0.10) 1px, transparent 1.4px), radial-gradient(rgba(0,0,0,0.30) 1px, transparent 1.4px)",
+            backgroundSize: "6px 6px, 9px 9px",
+          }}
+        />
+        {/* Old chalk dust haze */}
+        <div
+          className="absolute inset-0 opacity-22 mix-blend-screen pointer-events-none"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle at 25% 70%, rgba(255,255,250,0.18) 0, transparent 45%), radial-gradient(circle at 78% 32%, rgba(255,255,250,0.13) 0, transparent 35%), radial-gradient(circle at 50% 90%, rgba(255,255,250,0.15) 0, transparent 30%)",
+          }}
+        />
+        {/* Slate inset shadow + glassy reflection */}
+        <div className="absolute inset-0 shadow-[inset_0_0_70px_rgba(0,0,0,0.65),inset_0_0_2px_rgba(255,255,255,0.08)] pointer-events-none" />
 
-          {/* Eraser sweep */}
-          <motion.div
-            initial={{ x: "-30%", opacity: 0 }}
-            animate={{
-              x: phase === "covering" ? "130%" : "-30%",
-              opacity: 1,
-            }}
-            transition={{
-              delay: phase === "covering" ? coverMs / 2000 : 0,
-              duration: 0.7,
-              ease: "easeInOut",
-            }}
-            className="absolute top-1/2 -translate-y-1/2 h-16 w-28 rounded-sm"
+        {/* Chalk text — irregular edges via filter */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <svg
+            viewBox="0 0 800 220"
+            className="h-auto w-[78%]"
+          >
+            {/* Chalk halo (ghost) */}
+            <text
+              x="400"
+              y="135"
+              textAnchor="middle"
+              fontFamily='"Fraunces", "EB Garamond", Georgia, serif'
+              fontSize="148"
+              fontStyle="italic"
+              fontWeight="400"
+              fill="rgba(255,250,235,0.18)"
+              filter="url(#chalk-rough)"
+            >
+              Education.
+            </text>
+            {/* Main chalk stroke */}
+            <text
+              x="400"
+              y="135"
+              textAnchor="middle"
+              fontFamily='"Fraunces", "EB Garamond", Georgia, serif'
+              fontSize="148"
+              fontStyle="italic"
+              fontWeight="400"
+              fill="rgba(255,250,235,0.92)"
+              filter="url(#chalk-rough)"
+              style={{ filter: "url(#chalk-rough) drop-shadow(0 0 8px rgba(255,255,235,0.18))" }}
+            >
+              Education.
+            </text>
+            {/* Subtitle in mono caps — small chalk handwriting */}
+            <text
+              x="400"
+              y="190"
+              textAnchor="middle"
+              fontFamily="ui-monospace, SFMono-Regular, monospace"
+              fontSize="14"
+              fill="rgba(255,250,235,0.55)"
+              letterSpacing="6"
+              filter="url(#chalk-rough)"
+            >
+              §02 · THE NEW ARCHITECTURE OF LEARNING
+            </text>
+          </svg>
+        </div>
+
+        {/* Chalk eraser sweep — felt block with wooden back */}
+        <motion.div
+          initial={{ x: "-30%", opacity: 0 }}
+          animate={{
+            x: phase === "covering" ? "130%" : "-30%",
+            opacity: 1,
+          }}
+          transition={{
+            delay: phase === "covering" ? coverMs / 2000 : 0,
+            duration: 0.7,
+            ease: "easeInOut",
+          }}
+          className="absolute top-1/2 -translate-y-1/2 h-16 w-32"
+        >
+          {/* Chalk dust trail behind */}
+          <div className="absolute -inset-y-2 -left-12 w-12 bg-gradient-to-r from-transparent to-white/35 blur-[3px]" />
+          {/* Wood backing */}
+          <div
+            className="absolute inset-x-0 top-0 h-7 rounded-t-sm"
             style={{
               background:
-                "linear-gradient(180deg, #d9c294 0%, #a88a55 60%, #6e5a35 100%)",
+                "linear-gradient(180deg, #c2925a 0%, #8e6535 60%, #5e4423 100%)",
               boxShadow:
-                "0 8px 20px rgba(0,0,0,0.7), inset 0 2px 2px rgba(255,255,255,0.3), inset 0 -2px 2px rgba(0,0,0,0.4)",
+                "0 4px 8px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,225,180,0.4), inset 0 -1px 0 rgba(0,0,0,0.4)",
             }}
-          >
-            <div className="absolute inset-x-2 bottom-1 h-3 rounded-sm bg-white/40 blur-[2px]" />
-          </motion.div>
+          />
+          {/* Wood grain on the back */}
+          <div
+            className="absolute inset-x-0 top-0 h-7 rounded-t-sm opacity-40 mix-blend-overlay pointer-events-none"
+            style={{
+              backgroundImage:
+                "repeating-linear-gradient(90deg, rgba(0,0,0,0.20) 0, rgba(0,0,0,0.20) 1px, transparent 1px, transparent 4px)",
+            }}
+          />
+          {/* Felt body */}
+          <div
+            className="absolute inset-x-0 top-7 h-7 rounded-b-sm"
+            style={{
+              background:
+                "linear-gradient(180deg, #d9c294 0%, #c0a978 50%, #a89060 100%)",
+              boxShadow:
+                "inset 0 1px 1px rgba(255,255,255,0.3), inset 0 -1px 1px rgba(0,0,0,0.3), 0 4px 6px rgba(0,0,0,0.35)",
+            }}
+          />
+          {/* Chalk-stained underside */}
+          <div className="absolute inset-x-0 bottom-0 h-2 rounded-b-sm bg-white/55 blur-[2px]" />
+        </motion.div>
 
-          {/* Chalk tray */}
-          <div className="absolute inset-x-0 bottom-0 h-3 bg-gradient-to-b from-[#3a2814] to-[#1a0e08] shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)]" />
+        {/* Chalk tray with chalk pieces */}
+        <div
+          className="absolute inset-x-0 bottom-0 h-5"
+          style={{
+            background:
+              "linear-gradient(180deg, #4a341c 0%, #2c1d10 60%, #1a0f08 100%)",
+            boxShadow:
+              "inset 0 2px 4px rgba(0,0,0,0.7), inset 0 -1px 0 rgba(0,0,0,0.5)",
+          }}
+        >
+          {/* Chalk dust on the tray */}
+          <div className="absolute inset-x-0 top-0 h-1 bg-white/25 blur-[1px]" />
+          {/* Chalk pieces lying on the tray */}
+          <div className="absolute left-[18%] top-1 h-2 w-12 rounded-sm bg-gradient-to-b from-[#f6f0db] to-[#d8cfb0] shadow-[0_1px_1px_rgba(0,0,0,0.5)]" />
+          <div className="absolute left-[70%] top-1 h-2 w-8 rounded-sm bg-gradient-to-b from-[#f6f0db] to-[#d8cfb0] shadow-[0_1px_1px_rgba(0,0,0,0.5)]" />
         </div>
       </div>
     </motion.div>

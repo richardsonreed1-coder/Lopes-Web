@@ -9,7 +9,7 @@ import {
 } from "@/lib/content";
 import type { LedgerColor } from "@/lib/content";
 import { MistBackground } from "@/components/mist-background";
-import { CurtainLink } from "@/components/curtain-link";
+import { CurtainLink, type CurtainVariant } from "@/components/curtain-link";
 
 export function generateStaticParams() {
   return CATEGORY_SLUGS.map((category) => ({ category }));
@@ -67,6 +67,16 @@ export default async function CategoryPage({
   const [leadTitle, accentTitle] = splitHeadline(ledger.emphasis);
   const stats = ledger.stats ?? [];
   const timeline = ledger.timeline ?? [];
+  // Each sector exits via the same transition it entered with, so the visual
+  // language stays consistent in both directions.
+  const BACK_VARIANT: Record<string, CurtainVariant> = {
+    "capital-markets": "candlestick",
+    "real-estate":     "rolling-door",
+    "education":       "chalkboard",
+    "healthcare":      "ekg-monitor",
+    "media-consumer":  "theater-curtains",
+  };
+  const backVariant: CurtainVariant = BACK_VARIANT[category] ?? "default";
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-ink font-sans text-paper selection:bg-paper/10">
@@ -89,6 +99,7 @@ export default async function CategoryPage({
             href="/"
             accent="#7A4FD9"
             label="Returning to hub"
+            variant={backVariant}
             className="font-mono text-[10px] uppercase tracking-[0.3em] text-paper/65 transition-colors hover:text-paper"
           >
             ← Back to hub
@@ -102,6 +113,7 @@ export default async function CategoryPage({
               href="/"
               accent="#7A4FD9"
               label="Returning to hub"
+              variant={backVariant}
               className="transition-colors hover:text-paper"
             >
               Preview
@@ -351,7 +363,7 @@ export default async function CategoryPage({
               </span>
               -{volNum}
             </span>
-            <CurtainLink href="/" accent="#7A4FD9" label="Returning to hub" className="transition-colors hover:text-paper">
+            <CurtainLink href="/" accent="#7A4FD9" label="Returning to hub" variant={backVariant} className="transition-colors hover:text-paper">
               ← Back to hub
             </CurtainLink>
           </div>

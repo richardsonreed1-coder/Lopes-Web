@@ -17,7 +17,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { MistBackground, type FogPalette } from "@/components/mist-background";
-import { CurtainLink } from "@/components/curtain-link";
+import { CurtainLink, type CurtainVariant } from "@/components/curtain-link";
 
 // Roman numerals for the live date eyebrow.
 function toRoman(n: number): string {
@@ -60,14 +60,16 @@ type Tile = {
   /** color the PageCurtain paints during the slide */
   accent: string;
   Icon: LucideIcon;
+  /** override the default curtain visual for this tile */
+  variant?: CurtainVariant;
 };
 
 const TILES: Tile[] = [
-  { vol: "VOL.01", title: "Capital Markets",   subtitle: "pricing the distortion",          href: "/capital-markets", accent: "#7A4FD9", Icon: LineChart },
-  { vol: "VOL.02", title: "Real Estate",       subtitle: "infrastructure for the overflow", href: "/real-estate",     accent: "#8C6A2A", Icon: Building2 },
-  { vol: "VOL.03", title: "Education",         subtitle: "the new architecture of learning",href: "/education",       accent: "#4A1A24", Icon: GraduationCap },
-  { vol: "VOL.04", title: "Healthcare",        subtitle: "the parallel health economy",     href: "/healthcare",      accent: "#244B4F", Icon: Activity },
-  { vol: "VOL.05", title: "Media & Consumer",  subtitle: "the infrastructure of influence", href: "/media-consumer",  accent: "#3B4230", Icon: Megaphone },
+  { vol: "VOL.01", title: "Capital Markets",   subtitle: "pricing the distortion",          href: "/capital-markets", accent: "#7A4FD9", Icon: LineChart,     variant: "candlestick" },
+  { vol: "VOL.02", title: "Real Estate",       subtitle: "infrastructure for the overflow", href: "/real-estate",     accent: "#8C6A2A", Icon: Building2,     variant: "rolling-door" },
+  { vol: "VOL.03", title: "Education",         subtitle: "the new architecture of learning",href: "/education",       accent: "#4A1A24", Icon: GraduationCap, variant: "chalkboard" },
+  { vol: "VOL.04", title: "Healthcare",        subtitle: "the parallel health economy",     href: "/healthcare",      accent: "#244B4F", Icon: Activity,      variant: "ekg-monitor" },
+  { vol: "VOL.05", title: "Media & Consumer",  subtitle: "the infrastructure of influence", href: "/media-consumer",  accent: "#3B4230", Icon: Megaphone,     variant: "theater-curtains" },
   { vol: "VOL.06", title: "Letters",           subtitle: "annual notes, on the record",     href: "/#letters",         accent: "#EDE5D2", Icon: ScrollText },
   { vol: "PR.I",   title: "Discover",          subtitle: "where signal becomes thesis",     href: "/discover",        accent: "#5028A0", Icon: Compass },
   { vol: "PR.II",  title: "Develop",           subtitle: "where capital becomes operation", href: "/develop",         accent: "#6E2E18", Icon: Hammer },
@@ -177,6 +179,7 @@ function LiquidCard({ tile }: { tile: Tile }) {
       href={tile.href}
       accent={tile.accent}
       label={`Opening ${tile.title}`}
+      variant={tile.variant}
       className="lq-parent"
       ariaLabel={`${tile.title} — ${tile.subtitle}`}
     >

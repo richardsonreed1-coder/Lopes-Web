@@ -21,6 +21,14 @@ const FRAG = `
   uniform float u_speed;
   uniform float u_turbulence;
   uniform float u_brightness;
+  // entry direction: (0,1)=bottom-up, (1,0)=left-drift, (0,0)=disabled
+  uniform vec2 u_entry_dir;
+  // 0 -> 1.4 across the entry duration; clamped at 1.4 = fully revealed
+  uniform float u_entry_progress;
+  // density profile: 0 uniform, 1 heavier at bottom, 2 heavier at edges
+  uniform int u_density_mode;
+  // overall mist intensity multiplier
+  uniform float u_intensity;
 
   float hash(vec2 p) {
     p = fract(p * vec2(123.34, 456.21));
@@ -51,7 +59,8 @@ const FRAG = `
   }
 
   void main() {
-    vec2 uv = gl_FragCoord.xy / u_resolution.xy;
+    vec2 uvn = gl_FragCoord.xy / u_resolution.xy;
+    vec2 uv = uvn;
     uv.x *= u_resolution.x / u_resolution.y;
 
     vec2 mPos = u_mouse / u_resolution.xy;
@@ -70,11 +79,26 @@ const FRAG = `
 
     float f = fbm(uv + r);
 
-    vec3 color = mix(u_base, u_mist, f);
-    color = mix(color, u_accent, dot(q, r) * 0.55);
+    // density weight on the mist contribution
+    float dw = 1.0;
+    if (u_density_mode == 1) {
+      dw = mix(0.45, 1.4, 1.0 - uvn.y);
+    } else if (u_density_mode == 2) {
+      float d2 = clamp(length(uvn - vec2(0.5)) * 1.55, 0.0, 1.0);
+      dw = mix(0.45, 1.45, d2);
+    }
+    dw *= u_intensity;
+
+    // entry mask: reveal advances from u_entry_dir along the normalized axis
+    float threshold = dot(uvn, u_entry_dir);
+    float mask = smoothstep(threshold, threshold + 0.4, u_entry_progress);
+
+    float fAdj = clamp(f * dw, 0.0, 1.4) * mask;
+    vec3 color = mix(u_base, u_mist, fAdj);
+    color = mix(color, u_accent, dot(q, r) * 0.55 * mask);
 
     float mouseGlow = smoothstep(0.4, 0.0, dist);
-    color += mouseGlow * 0.06 * u_glow;
+    color += mouseGlow * 0.06 * u_glow * mask;
 
     color = pow(color, vec3(0.92)) * u_brightness;
     gl_FragColor = vec4(color, 1.0);
@@ -104,18 +128,49 @@ const DEFAULT_PALETTE: Required<FogPalette> = {
   brightness: 1.35,
 };
 
-export function MistBackground({ palette }: { palette?: FogPalette } = {}) {
+export type FogEntryDir = "bottom" | "left" | null;
+export type FogDensity = "uniform" | "bottom" | "edges";
+
+type Props = {
+  palette?: FogPalette;
+  entry?: { dir: FogEntryDir; duration?: number };
+  density?: FogDensity;
+  /** mist multiplier; 1.0 = default. Bump for a denser look. */
+  intensity?: number;
+};
+
+export function MistBackground({
+  palette,
+  entry,
+  density = "uniform",
+  intensity = 1.0,
+}: Props = {}) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  // hold the latest palette in a ref so the rAF loop can read it without
-  // tearing down WebGL on prop change
+
+  // Refs so the rAF loop can read live values without re-initializing WebGL.
   const paletteRef = useRef<Required<FogPalette>>({
     ...DEFAULT_PALETTE,
     ...palette,
+  });
+  const settingsRef = useRef({
+    entryDir: entry?.dir ?? null,
+    entryDuration: entry?.duration ?? 1.5,
+    density,
+    intensity,
   });
 
   useEffect(() => {
     paletteRef.current = { ...DEFAULT_PALETTE, ...palette };
   }, [palette]);
+
+  useEffect(() => {
+    settingsRef.current = {
+      entryDir: entry?.dir ?? null,
+      entryDuration: entry?.duration ?? 1.5,
+      density,
+      intensity,
+    };
+  }, [entry?.dir, entry?.duration, density, intensity]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -170,6 +225,10 @@ export function MistBackground({ palette }: { palette?: FogPalette } = {}) {
     const speedLoc = gl.getUniformLocation(program, "u_speed");
     const turbulenceLoc = gl.getUniformLocation(program, "u_turbulence");
     const brightnessLoc = gl.getUniformLocation(program, "u_brightness");
+    const entryDirLoc = gl.getUniformLocation(program, "u_entry_dir");
+    const entryProgressLoc = gl.getUniformLocation(program, "u_entry_progress");
+    const densityModeLoc = gl.getUniformLocation(program, "u_density_mode");
+    const intensityLoc = gl.getUniformLocation(program, "u_intensity");
 
     const mouse = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
     const onMove = (e: MouseEvent) => {
@@ -179,13 +238,37 @@ export function MistBackground({ palette }: { palette?: FogPalette } = {}) {
     window.addEventListener("mousemove", onMove);
 
     let raf = 0;
+    let entryStart: number | null = null;
     const render = (t: number) => {
       if (canvas.width !== window.innerWidth || canvas.height !== window.innerHeight) {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         gl.viewport(0, 0, canvas.width, canvas.height);
       }
+      if (entryStart === null) entryStart = t;
+
       const p = paletteRef.current;
+      const s = settingsRef.current;
+
+      let dirX = 0;
+      let dirY = 0;
+      let progress = 5.0; // disabled => fully revealed
+      if (s.entryDir === "bottom") {
+        dirX = 0;
+        dirY = 1;
+        const e = (t - entryStart) / 1000;
+        progress = Math.min((e / s.entryDuration) * 1.4, 1.4);
+      } else if (s.entryDir === "left") {
+        dirX = 1;
+        dirY = 0;
+        const e = (t - entryStart) / 1000;
+        progress = Math.min((e / s.entryDuration) * 1.4, 1.4);
+      }
+
+      let densityMode = 0;
+      if (s.density === "bottom") densityMode = 1;
+      else if (s.density === "edges") densityMode = 2;
+
       gl.clearColor(p.base[0], p.base[1], p.base[2], 1.0);
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.useProgram(program);
@@ -199,6 +282,10 @@ export function MistBackground({ palette }: { palette?: FogPalette } = {}) {
       gl.uniform1f(speedLoc, p.speed);
       gl.uniform1f(turbulenceLoc, p.turbulence);
       gl.uniform1f(brightnessLoc, p.brightness);
+      gl.uniform2f(entryDirLoc, dirX, dirY);
+      gl.uniform1f(entryProgressLoc, progress);
+      gl.uniform1i(densityModeLoc, densityMode);
+      gl.uniform1f(intensityLoc, s.intensity);
       gl.drawArrays(gl.TRIANGLES, 0, 6);
       raf = requestAnimationFrame(render);
     };

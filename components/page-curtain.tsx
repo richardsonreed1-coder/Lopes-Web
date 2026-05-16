@@ -3,52 +3,61 @@
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
+import { RollingDoorCurtain } from "@/components/rolling-door-curtain";
+import { CandlestickCurtain } from "@/components/transitions/capital-markets";
+import { ChalkboardCurtain } from "@/components/transitions/education";
+import { EkgMonitorCurtain } from "@/components/transitions/healthcare";
+import { TheaterCurtainsCurtain } from "@/components/transitions/media";
+import type { CurtainVariant } from "@/components/curtain-link";
 
-type CurtainDetail = { href: string; accent?: string; label?: string };
+type CurtainDetail = {
+  href: string;
+  accent?: string;
+  label?: string;
+  variant?: CurtainVariant;
+};
 
-// Total = COVER + HOLD + UNCOVER. Tuned for a tight, fluid feel.
-const COVER_MS = 500;   // slide-in
-const NAV_AT_MS = 420;  // dispatch router.push slightly before fully covered
-const HOLD_MS = 280;    // dwell after navigation for the new page to settle
-const UNCOVER_MS = 500; // slide-out
+type Timing = { cover: number; navAt: number; hold: number; uncover: number };
 
-/**
- * Persistent curtain that lives in the root layout. Pages dispatch a
- * "lopes:navigate" custom event with { href, accent, label } and this
- * component runs the slide-up cover, performs the route push under the
- * cover, then slides the curtain off-screen — surviving the navigation
- * because it isn't part of the page being unmounted.
- */
+const TIMING: Record<CurtainVariant, Timing> = {
+  default:            { cover: 500, navAt: 420, hold: 280, uncover: 500 },
+  "rolling-door":     { cover: 650, navAt: 540, hold: 420, uncover: 950 },
+  "candlestick":      { cover: 700, navAt: 580, hold: 500, uncover: 600 },
+  "chalkboard":       { cover: 550, navAt: 460, hold: 800, uncover: 550 },
+  "ekg-monitor":      { cover: 800, navAt: 660, hold: 400, uncover: 500 },
+  "theater-curtains": { cover: 750, navAt: 620, hold: 450, uncover: 800 },
+};
+
 export function PageCurtain() {
   const router = useRouter();
   const [phase, setPhase] = useState<"idle" | "covering" | "uncovering">("idle");
   const [accent, setAccent] = useState("#7A4FD9");
   const [label, setLabel] = useState("Opening volume");
+  const [variant, setVariant] = useState<CurtainVariant>("default");
 
   const handleNavigate = useCallback(
     (e: Event) => {
       const ev = e as CustomEvent<CurtainDetail>;
-      const { href, accent: a = "#7A4FD9", label: l } = ev.detail ?? { href: "/" };
+      const { href, accent: a = "#7A4FD9", label: l, variant: v = "default" } = ev.detail ?? { href: "/" };
       if (!href) return;
 
+      const t = TIMING[v];
       setAccent(a);
       setLabel(l ?? "Opening volume");
+      setVariant(v);
       setPhase("covering");
 
-      // navigate while the curtain is almost fully covering
       const navTimer = window.setTimeout(() => {
         router.push(href);
-      }, NAV_AT_MS);
+      }, t.navAt);
 
-      // hold under the curtain so the new page can hydrate, then uncover
       const uncoverTimer = window.setTimeout(() => {
         setPhase("uncovering");
-      }, COVER_MS + HOLD_MS);
+      }, t.cover + t.hold);
 
-      // reset to idle after the uncover animation finishes
       const idleTimer = window.setTimeout(() => {
         setPhase("idle");
-      }, COVER_MS + HOLD_MS + UNCOVER_MS);
+      }, t.cover + t.hold + t.uncover);
 
       return () => {
         clearTimeout(navTimer);
@@ -67,16 +76,33 @@ export function PageCurtain() {
   }, [handleNavigate]);
 
   const visible = phase !== "idle";
+  const t = TIMING[variant];
+  const activePhase = phase as "covering" | "uncovering";
 
   return (
     <AnimatePresence>
-      {visible && (
+      {visible && variant === "rolling-door" && (
+        <RollingDoorCurtain phase={activePhase} coverMs={t.cover} uncoverMs={t.uncover} />
+      )}
+      {visible && variant === "candlestick" && (
+        <CandlestickCurtain phase={activePhase} coverMs={t.cover} uncoverMs={t.uncover} />
+      )}
+      {visible && variant === "chalkboard" && (
+        <ChalkboardCurtain phase={activePhase} coverMs={t.cover} uncoverMs={t.uncover} />
+      )}
+      {visible && variant === "ekg-monitor" && (
+        <EkgMonitorCurtain phase={activePhase} coverMs={t.cover} uncoverMs={t.uncover} />
+      )}
+      {visible && variant === "theater-curtains" && (
+        <TheaterCurtainsCurtain phase={activePhase} coverMs={t.cover} uncoverMs={t.uncover} />
+      )}
+      {visible && variant === "default" && (
         <motion.div
           key="page-curtain"
           initial={{ y: "100%" }}
-          animate={{ y: phase === "covering" ? "0%" : "-100%" }}
+          animate={{ y: activePhase === "covering" ? "0%" : "-100%" }}
           transition={{
-            duration: phase === "covering" ? COVER_MS / 1000 : UNCOVER_MS / 1000,
+            duration: activePhase === "covering" ? t.cover / 1000 : t.uncover / 1000,
             ease: [0.65, 0, 0.35, 1],
           }}
           className="fixed inset-0 z-[100] pointer-events-none"
@@ -85,8 +111,8 @@ export function PageCurtain() {
           <div className="absolute inset-0 flex items-center justify-center">
             <motion.div
               initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: phase === "covering" ? 1 : 0, y: 0 }}
-              transition={{ delay: phase === "covering" ? 0.15 : 0, duration: 0.3 }}
+              animate={{ opacity: activePhase === "covering" ? 1 : 0, y: 0 }}
+              transition={{ delay: activePhase === "covering" ? 0.15 : 0, duration: 0.3 }}
               className="font-mono text-[10px] uppercase tracking-[0.4em] text-white/85"
             >
               {label}

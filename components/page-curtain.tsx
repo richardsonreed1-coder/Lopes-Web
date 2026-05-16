@@ -6,7 +6,12 @@ import { motion, AnimatePresence } from "motion/react";
 import { RollingDoorCurtain } from "@/components/rolling-door-curtain";
 import { CandlestickCurtain } from "@/components/transitions/capital-markets";
 import { ChalkboardCurtain } from "@/components/transitions/education";
-import { EkgMonitorCurtain } from "@/components/transitions/healthcare";
+import {
+  EkgMonitorCurtain,
+  LaserScanCurtain,
+  FrequencyTunerCurtain,
+  LedPanelCurtain,
+} from "@/components/transitions/healthcare";
 import { TheaterCurtainsCurtain } from "@/components/transitions/media";
 import type { CurtainVariant } from "@/components/curtain-link";
 
@@ -25,6 +30,9 @@ const TIMING: Record<CurtainVariant, Timing> = {
   "candlestick":      { cover: 900, navAt: 760, hold: 700, uncover: 600 },
   "chalkboard":       { cover: 550, navAt: 460, hold: 800, uncover: 550 },
   "ekg-monitor":      { cover: 900, navAt: 760, hold: 600, uncover: 500 },
+  "laser-scan":       { cover: 1100, navAt: 940, hold: 500, uncover: 500 },
+  "frequency-tuner":  { cover: 900, navAt: 760, hold: 600, uncover: 500 },
+  "led-panel":        { cover: 800, navAt: 680, hold: 600, uncover: 500 },
   "theater-curtains": { cover: 750, navAt: 620, hold: 450, uncover: 800 },
 };
 
@@ -92,6 +100,15 @@ export function PageCurtain() {
       )}
       {visible && variant === "ekg-monitor" && (
         <EkgMonitorCurtain phase={activePhase} coverMs={t.cover} uncoverMs={t.uncover} />
+      )}
+      {visible && variant === "laser-scan" && (
+        <LaserScanCurtain phase={activePhase} coverMs={t.cover} uncoverMs={t.uncover} />
+      )}
+      {visible && variant === "frequency-tuner" && (
+        <FrequencyTunerCurtain phase={activePhase} coverMs={t.cover} uncoverMs={t.uncover} />
+      )}
+      {visible && variant === "led-panel" && (
+        <LedPanelCurtain phase={activePhase} coverMs={t.cover} uncoverMs={t.uncover} />
       )}
       {visible && variant === "theater-curtains" && (
         <TheaterCurtainsCurtain phase={activePhase} coverMs={t.cover} uncoverMs={t.uncover} />

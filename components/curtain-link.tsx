@@ -10,6 +10,9 @@ export type CurtainVariant =
   | "candlestick"
   | "chalkboard"
   | "ekg-monitor"
+  | "laser-scan"
+  | "frequency-tuner"
+  | "led-panel"
   | "theater-curtains";
 
 type Props = {

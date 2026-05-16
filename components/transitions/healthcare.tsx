@@ -9,246 +9,204 @@ type Props = {
 };
 
 /* ============================================================
- * X-RAY LIGHTBOX — clinical viewing panel slides in
- * horizontally with a clipped chest X-ray film. Backlight
- * flickers on, holds, flickers off as it slides out.
+ * EKG MONITOR — multi-trace ICU patient monitor (Philips
+ * IntelliVue-style). ECG, SpO₂ pleth, ART pressure, CO₂
+ * capnograph stacked vertically with per-trace numerics.
  * ============================================================ */
-export function XRayLightboxCurtain({ phase, coverMs, uncoverMs }: Props) {
+
+type Trace = {
+  key: string;
+  label: string;
+  unit: string;
+  value: string;
+  color: string;
+  path: string; // svg path drawn across a 1000×100 viewport
+  small?: string; // small secondary readout
+};
+
+const TRACES: Trace[] = [
+  {
+    key: "ecg",
+    label: "ECG II",
+    unit: "bpm",
+    value: "72",
+    color: "rgb(96, 220, 140)",
+    small: "PVC 0/min",
+    // Sawtooth with sharp QRS spikes
+    path:
+      "M 0 50 L 80 50 L 100 50 L 110 25 L 120 75 L 130 35 L 145 50 L 250 50 L 270 50 L 280 25 L 290 75 L 300 35 L 315 50 L 420 50 L 440 50 L 450 25 L 460 75 L 470 35 L 485 50 L 590 50 L 610 50 L 620 25 L 630 75 L 640 35 L 655 50 L 760 50 L 780 50 L 790 25 L 800 75 L 810 35 L 825 50 L 1000 50",
+  },
+  {
+    key: "spo2",
+    label: "SpO₂",
+    unit: "%",
+    value: "98",
+    color: "rgb(255, 220, 90)",
+    small: "PI 1.4",
+    // Plethysmograph — rounded pulse wave
+    path:
+      "M 0 60 Q 30 40 50 50 Q 75 75 100 60 Q 130 30 160 55 Q 185 70 210 60 Q 240 35 270 55 Q 295 70 320 60 Q 350 35 380 55 Q 405 70 430 60 Q 460 35 490 55 Q 515 70 540 60 Q 570 35 600 55 Q 625 70 650 60 Q 680 35 710 55 Q 735 70 760 60 Q 790 35 820 55 Q 845 70 870 60 Q 900 35 930 55 Q 955 70 980 60 L 1000 60",
+  },
+  {
+    key: "art",
+    label: "ART",
+    unit: "mmHg",
+    value: "118/76",
+    color: "rgb(244, 100, 100)",
+    small: "MAP 90",
+    // Arterial pressure — sharp upstroke, dicrotic notch
+    path:
+      "M 0 70 L 50 70 L 60 20 L 80 35 L 90 30 L 110 70 L 175 70 L 185 20 L 205 35 L 215 30 L 235 70 L 300 70 L 310 20 L 330 35 L 340 30 L 360 70 L 425 70 L 435 20 L 455 35 L 465 30 L 485 70 L 550 70 L 560 20 L 580 35 L 590 30 L 610 70 L 675 70 L 685 20 L 705 35 L 715 30 L 735 70 L 800 70 L 810 20 L 830 35 L 840 30 L 860 70 L 1000 70",
+  },
+  {
+    key: "co2",
+    label: "CO₂",
+    unit: "mmHg",
+    value: "38",
+    color: "rgb(170, 220, 255)",
+    small: "RR 14",
+    // Capnograph — square-ish exhalation plateau
+    path:
+      "M 0 80 L 60 80 L 75 30 L 130 30 L 145 80 L 220 80 L 235 30 L 290 30 L 305 80 L 380 80 L 395 30 L 450 30 L 465 80 L 540 80 L 555 30 L 610 30 L 625 80 L 700 80 L 715 30 L 770 30 L 785 80 L 860 80 L 875 30 L 930 30 L 945 80 L 1000 80",
+  },
+];
+
+export function EkgMonitorCurtain({ phase, coverMs, uncoverMs }: Props) {
   return (
     <motion.div
-      key="xray-lightbox"
-      initial={{ x: "-100%" }}
-      animate={{ x: phase === "covering" ? "0%" : "100%" }}
+      key="ekg-monitor"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: phase === "covering" ? 1 : 0 }}
       transition={{
         duration: phase === "covering" ? coverMs / 1000 : uncoverMs / 1000,
-        ease: phase === "covering" ? [0.7, 0, 0.84, 0] : [0.16, 1, 0.3, 1],
+        ease: "easeOut",
       }}
-      className="fixed inset-0 z-[100] pointer-events-none"
+      className="fixed inset-0 z-[100] pointer-events-none bg-[#040608]"
     >
-      {/* Dark exam room — frames the lightbox */}
-      <div className="absolute inset-0 bg-[#0c0e12]" />
-      {/* Lightbox panel — fills most of the screen with a margin */}
-      <div className="absolute inset-6 md:inset-10 overflow-hidden rounded-[2px] shadow-[0_0_60px_rgba(220,235,255,0.18)]">
-        {/* Flickering backlight */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{
-            opacity:
-              phase === "covering"
-                ? [0, 0.4, 0.15, 0.85, 0.6, 0.95, 0.9, 1]
-                : [1, 0.6, 0.95, 0.2, 0],
-          }}
-          transition={{
-            duration: phase === "covering" ? (coverMs / 1000) * 0.6 : (uncoverMs / 1000) * 0.6,
-            ease: "linear",
-            times: phase === "covering" ? [0, 0.1, 0.2, 0.35, 0.5, 0.7, 0.85, 1] : undefined,
-          }}
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(ellipse at center, #f5f8ff 0%, #dde4ef 70%, #b8c4d4 100%)",
-          }}
-        />
-        {/* Fluorescent tube tint — cool clinical white */}
-        <div
-          className="absolute inset-0 pointer-events-none opacity-25"
-          style={{
-            background:
-              "linear-gradient(180deg, rgba(180,210,240,0.3) 0%, transparent 50%, rgba(180,210,240,0.3) 100%)",
-          }}
-        />
+      {/* CRT scanlines */}
+      <div
+        className="absolute inset-0 opacity-30 pointer-events-none"
+        style={{
+          backgroundImage:
+            "repeating-linear-gradient(0deg, transparent 0, transparent 2px, rgba(120, 200, 255, 0.04) 2px, rgba(120, 200, 255, 0.04) 3px)",
+        }}
+      />
+      {/* Soft vignette */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.55) 100%)",
+        }}
+      />
 
-        {/* X-ray film clipped to the lightbox */}
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[78%] w-[58%] max-w-[640px]">
-          {/* Chrome clips at the top */}
-          <div className="absolute -top-3 left-[15%] h-5 w-12 rounded-sm bg-gradient-to-b from-[#d8dde3] to-[#7d8389] shadow-[0_2px_4px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.6)]" />
-          <div className="absolute -top-3 left-[44%] h-5 w-12 rounded-sm bg-gradient-to-b from-[#d8dde3] to-[#7d8389] shadow-[0_2px_4px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.6)]" />
-          <div className="absolute -top-3 right-[15%] h-5 w-12 rounded-sm bg-gradient-to-b from-[#d8dde3] to-[#7d8389] shadow-[0_2px_4px_rgba(0,0,0,0.4),inset_0_1px_0_rgba(255,255,255,0.6)]" />
-
-          {/* Film: dark base, semi-transparent so the lightbox shows through */}
-          <div
-            className="absolute inset-0 rounded-[1px]"
-            style={{
-              background:
-                "radial-gradient(ellipse at center, rgba(20,28,38,0.92) 0%, rgba(8,12,18,0.98) 70%)",
-              boxShadow: "inset 0 0 30px rgba(0,0,0,0.7)",
-            }}
-          >
-            {/* Chest X-ray silhouette — ribs + spine */}
-            <svg
-              viewBox="0 0 400 600"
-              className="absolute inset-0 h-full w-full"
-              preserveAspectRatio="xMidYMid meet"
-            >
-              {/* Spine */}
-              <line
-                x1="200" y1="80" x2="200" y2="500"
-                stroke="rgba(220,235,255,0.6)"
-                strokeWidth="14"
-                strokeLinecap="round"
-              />
-              {/* Vertebrae notches */}
-              {Array.from({ length: 14 }).map((_, i) => (
-                <line
-                  key={i}
-                  x1="180" x2="220"
-                  y1={100 + i * 28} y2={100 + i * 28}
-                  stroke="rgba(180,200,220,0.4)"
-                  strokeWidth="1"
-                />
-              ))}
-              {/* Ribs — left side */}
-              {Array.from({ length: 7 }).map((_, i) => (
-                <path
-                  key={`l-${i}`}
-                  d={`M 200 ${140 + i * 36} Q 80 ${175 + i * 34} 105 ${260 + i * 30}`}
-                  fill="none"
-                  stroke="rgba(220,235,255,0.45)"
-                  strokeWidth="6"
-                  strokeLinecap="round"
-                />
-              ))}
-              {/* Ribs — right side */}
-              {Array.from({ length: 7 }).map((_, i) => (
-                <path
-                  key={`r-${i}`}
-                  d={`M 200 ${140 + i * 36} Q 320 ${175 + i * 34} 295 ${260 + i * 30}`}
-                  fill="none"
-                  stroke="rgba(220,235,255,0.45)"
-                  strokeWidth="6"
-                  strokeLinecap="round"
-                />
-              ))}
-              {/* Heart shadow */}
-              <ellipse cx="170" cy="280" rx="55" ry="70" fill="rgba(40,55,72,0.6)" />
-            </svg>
-
-            {/* Patient label corner */}
-            <div className="absolute bottom-3 right-3 rounded-[1px] border border-paper/25 bg-black/60 px-2 py-1 font-mono text-[8px] uppercase tracking-[0.3em] text-paper/80">
-              Lopes · PT.042 · {new Date().toISOString().slice(0, 10)}
-            </div>
-            {/* Orientation marker */}
-            <div className="absolute top-3 right-4 font-mono text-[14px] font-bold text-paper/85">
-              R
-            </div>
+      {/* Top patient bar */}
+      <div className="absolute inset-x-0 top-0 border-b border-paper/15 bg-black/70 px-6 py-3">
+        <div className="mx-auto flex max-w-[1280px] items-center justify-between font-mono text-[10px] uppercase tracking-[0.3em] text-paper/85">
+          <div className="flex items-center gap-5">
+            <span className="text-emerald-300">●</span>
+            <span className="text-paper">ICU · 4</span>
+            <span className="text-paper/55">Bed 042</span>
+            <span className="text-paper/55">PT.LOPES, J · M · 47</span>
+          </div>
+          <div className="hidden items-center gap-5 md:flex">
+            <span className="text-paper/55">ADM 05/14</span>
+            <span className="text-paper/55">DAY 03</span>
+            <span className="text-paper/55">DR. KWON</span>
+          </div>
+          <div className="text-paper/65">
+            {new Date().toISOString().slice(0, 10).replace(/-/g, "/")}
+            {" · "}
+            <span className="text-paper">{new Date().toISOString().slice(11, 16)}</span>
+            {" UTC"}
           </div>
         </div>
-
-        {/* Lightbox label plate */}
-        <div className="absolute left-4 bottom-3 font-mono text-[10px] uppercase tracking-[0.4em] text-[#3a4856]">
-          Lopes · Radiology · IV
-        </div>
-        <div className="absolute right-4 bottom-3 font-mono text-[10px] uppercase tracking-[0.4em] text-[#3a4856]">
-          Viewer · 02
-        </div>
       </div>
-    </motion.div>
-  );
-}
 
-/* ============================================================
- * PRIVACY SCREEN — folding hospital partition on caster wheels
- * rolls in from one side, settles with a tiny wobble, rolls
- * out the other way.
- * ============================================================ */
-export function PrivacyScreenCurtain({ phase, coverMs, uncoverMs }: Props) {
-  return (
-    <motion.div
-      key="privacy-screen"
-      initial={{ x: "-100%" }}
-      animate={{ x: phase === "covering" ? "0%" : "100%" }}
-      transition={{
-        duration: phase === "covering" ? coverMs / 1000 : uncoverMs / 1000,
-        ease: phase === "covering" ? [0.34, 1.2, 0.64, 1] : [0.16, 1, 0.3, 1],
-      }}
-      className="fixed inset-0 z-[100] pointer-events-none"
-    >
-      {/* Pale teal-grey hospital-wall backdrop fills any gap behind the linen */}
-      <div className="absolute inset-0 bg-[#c8cdc8]" />
-
-      {/* Steel top rail */}
-      <div className="absolute inset-x-0 top-0 h-3 bg-gradient-to-b from-[#7d8389] via-[#9da3a8] to-[#5d6368] shadow-[inset_0_-1px_0_rgba(0,0,0,0.4)]" />
-      {/* Steel bottom rail with wheels mounted below */}
-      <div className="absolute inset-x-0 bottom-12 h-3 bg-gradient-to-b from-[#7d8389] via-[#9da3a8] to-[#5d6368] shadow-[inset_0_1px_0_rgba(255,255,255,0.4),0_2px_4px_rgba(0,0,0,0.3)]" />
-
-      {/* Three linen panels */}
-      <div className="absolute inset-x-0 top-3 bottom-15 flex" style={{ bottom: "60px" }}>
-        {[0, 1, 2].map((i) => (
+      {/* Trace lanes */}
+      <div className="absolute inset-x-0 top-[52px] bottom-[44px] flex flex-col px-6">
+        {TRACES.map((tr, idx) => (
           <div
-            key={i}
-            className="relative flex-1"
-            style={{
-              background:
-                "linear-gradient(180deg, #efe8d4 0%, #e7dfca 50%, #d9d0b8 100%)",
-              boxShadow:
-                i === 1
-                  ? "inset 4px 0 6px rgba(0,0,0,0.12), inset -4px 0 6px rgba(0,0,0,0.12)"
-                  : i === 0
-                    ? "inset -4px 0 6px rgba(0,0,0,0.12)"
-                    : "inset 4px 0 6px rgba(0,0,0,0.12)",
-            }}
+            key={tr.key}
+            className="flex flex-1 items-center gap-4 border-b border-paper/10 last:border-b-0"
           >
-            {/* Linen weave */}
-            <div
-              className="absolute inset-0 opacity-35 mix-blend-overlay pointer-events-none"
-              style={{
-                backgroundImage: `
-                  repeating-linear-gradient(0deg, rgba(120,100,70,0.18) 0, rgba(120,100,70,0.18) 1px, transparent 1px, transparent 3px),
-                  repeating-linear-gradient(90deg, rgba(120,100,70,0.16) 0, rgba(120,100,70,0.16) 1px, transparent 1px, transparent 3px)
-                `,
-              }}
-            />
-            {/* Vertical stiles inside each panel — the steel frame */}
-            <div className="absolute inset-y-0 left-0 w-px bg-[#3a3a3a]/40" />
-            <div className="absolute inset-y-0 right-0 w-px bg-[#3a3a3a]/40" />
-
-            {/* Center panel gets a small stenciled plate */}
-            {i === 1 && (
-              <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-[2px] border border-[#3a3a3a]/30 bg-[#e0d8c2] px-4 py-1.5">
-                <span className="font-mono text-[10px] uppercase tracking-[0.5em] text-[#3a3a3a]/65">
-                  Lopes · Ward IV
-                </span>
+            {/* Trace label */}
+            <div className="w-20 shrink-0">
+              <div
+                className="font-mono text-[12px] font-bold uppercase tracking-[0.15em]"
+                style={{ color: tr.color }}
+              >
+                {tr.label}
               </div>
-            )}
+              <div className="font-mono text-[9px] uppercase tracking-[0.2em] text-paper/40">
+                {tr.small}
+              </div>
+            </div>
+
+            {/* Trace waveform */}
+            <div className="relative h-[80%] flex-1">
+              <svg
+                viewBox="0 0 1000 100"
+                className="h-full w-full"
+                preserveAspectRatio="none"
+              >
+                <defs>
+                  <pattern id={`grid-${tr.key}`} x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(120,200,255,0.06)" strokeWidth="0.5" />
+                  </pattern>
+                </defs>
+                <rect width="1000" height="100" fill={`url(#grid-${tr.key})`} />
+                <motion.path
+                  d={tr.path}
+                  fill="none"
+                  stroke={tr.color}
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  style={{ filter: `drop-shadow(0 0 4px ${tr.color})` }}
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: phase === "covering" ? 1 : 1 }}
+                  transition={{
+                    duration: coverMs / 1000,
+                    ease: "linear",
+                    delay: idx * 0.06,
+                  }}
+                />
+              </svg>
+            </div>
+
+            {/* Numeric readout */}
+            <div className="w-36 shrink-0 text-right">
+              <div
+                className="font-mono text-[clamp(28px,4.5vw,52px)] font-bold leading-none tabular-nums"
+                style={{ color: tr.color }}
+              >
+                {tr.value}
+              </div>
+              <div className="mt-1 font-mono text-[9px] uppercase tracking-[0.3em] text-paper/45">
+                {tr.unit}
+              </div>
+            </div>
           </div>
         ))}
       </div>
 
-      {/* Hinge shadows between panels */}
-      <div
-        className="absolute inset-y-3 left-1/3 w-2 pointer-events-none"
-        style={{ bottom: "60px" }}
-      >
-        <div className="h-full w-full bg-gradient-to-r from-transparent via-black/12 to-transparent" />
-      </div>
-      <div
-        className="absolute inset-y-3 left-2/3 w-2 pointer-events-none"
-        style={{ bottom: "60px" }}
-      >
-        <div className="h-full w-full bg-gradient-to-r from-transparent via-black/12 to-transparent" />
-      </div>
-
-      {/* Wheels at the bottom — four small chrome casters */}
-      <div className="absolute inset-x-0 bottom-2 flex justify-around px-12">
-        {[0, 1, 2, 3].map((i) => (
-          <div
-            key={i}
-            className="relative h-8 w-8"
-          >
-            {/* Caster mounting bracket */}
-            <div className="absolute inset-x-2 top-0 h-3 bg-gradient-to-b from-[#9da3a8] to-[#5d6368] rounded-t-sm" />
-            {/* Wheel */}
-            <div
-              className="absolute bottom-0 left-1/2 -translate-x-1/2 h-5 w-5 rounded-full"
-              style={{
-                background:
-                  "radial-gradient(circle at 35% 30%, #d8dde3 0%, #7d8389 50%, #3a3d40 100%)",
-                boxShadow:
-                  "0 2px 4px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.4)",
-              }}
-            />
+      {/* Bottom alarm + system bar */}
+      <div className="absolute inset-x-0 bottom-0 border-t border-paper/15 bg-black/70 px-6 py-2.5">
+        <div className="mx-auto flex max-w-[1280px] items-center justify-between font-mono text-[10px] uppercase tracking-[0.3em] text-paper/55">
+          <div className="flex items-center gap-5">
+            <span className="text-emerald-300">●</span>
+            <span>Telemetry · Stable</span>
+            <span className="hidden text-paper/40 md:inline">Alarms 2 silenced</span>
           </div>
-        ))}
+          <div className="hidden md:block">
+            HR limit <span className="text-paper">50–110</span>
+            {"   "}SpO₂ limit <span className="text-paper">≥ 92</span>
+          </div>
+          <div className="text-paper/45">
+            ▮ rec · Lopes · Unit IV
+          </div>
+        </div>
       </div>
     </motion.div>
   );

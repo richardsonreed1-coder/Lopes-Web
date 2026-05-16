@@ -65,10 +65,10 @@ type Tile = {
 };
 
 const TILES: Tile[] = [
-  { vol: "VOL.01", title: "Capital Markets",   subtitle: "pricing the distortion",          href: "/capital-markets", accent: "#7A4FD9", Icon: LineChart,     variant: "accounting-ledger" },
+  { vol: "VOL.01", title: "Capital Markets",   subtitle: "pricing the distortion",          href: "/capital-markets", accent: "#7A4FD9", Icon: LineChart,     variant: "candlestick" },
   { vol: "VOL.02", title: "Real Estate",       subtitle: "infrastructure for the overflow", href: "/real-estate",     accent: "#8C6A2A", Icon: Building2,     variant: "rolling-door" },
   { vol: "VOL.03", title: "Education",         subtitle: "the new architecture of learning",href: "/education",       accent: "#4A1A24", Icon: GraduationCap, variant: "chalkboard" },
-  { vol: "VOL.04", title: "Healthcare",        subtitle: "the parallel health economy",     href: "/healthcare",      accent: "#244B4F", Icon: Activity,      variant: "privacy-screen" },
+  { vol: "VOL.04", title: "Healthcare",        subtitle: "the parallel health economy",     href: "/healthcare",      accent: "#244B4F", Icon: Activity,      variant: "ekg-monitor" },
   { vol: "VOL.05", title: "Media & Consumer",  subtitle: "the infrastructure of influence", href: "/media-consumer",  accent: "#3B4230", Icon: Megaphone,     variant: "theater-curtains" },
   { vol: "VOL.06", title: "Letters",           subtitle: "annual notes, on the record",     href: "/#letters",         accent: "#EDE5D2", Icon: ScrollText },
   { vol: "PR.I",   title: "Discover",          subtitle: "where signal becomes thesis",     href: "/discover",        accent: "#5028A0", Icon: Compass },

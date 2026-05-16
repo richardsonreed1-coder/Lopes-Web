@@ -7,9 +7,10 @@ import { useRouter } from "next/navigation";
 export type CurtainVariant =
   | "default"
   | "rolling-door"
-  | "candlestick"
+  | "accounting-ledger"
   | "chalkboard"
-  | "ekg-monitor"
+  | "xray-lightbox"
+  | "privacy-screen"
   | "theater-curtains";
 
 type Props = {

@@ -70,10 +70,10 @@ export default async function CategoryPage({
   // Each sector exits via the same transition it entered with, so the visual
   // language stays consistent in both directions.
   const BACK_VARIANT: Record<string, CurtainVariant> = {
-    "capital-markets": "candlestick",
+    "capital-markets": "accounting-ledger",
     "real-estate":     "rolling-door",
     "education":       "chalkboard",
-    "healthcare":      "ekg-monitor",
+    "healthcare":      "privacy-screen",
     "media-consumer":  "theater-curtains",
   };
   const backVariant: CurtainVariant = BACK_VARIANT[category] ?? "default";

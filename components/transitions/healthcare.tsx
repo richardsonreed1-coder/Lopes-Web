@@ -566,3 +566,164 @@ export function LedPanelCurtain({ phase, coverMs, uncoverMs }: Props) {
     </motion.div>
   );
 }
+
+/* ============================================================
+ * SPECTRAL SCAN — two terminal buffers stacked over a black
+ * field. A bright cyan scanner line traverses left → right;
+ * to the left of the line is the NEW buffer (active / cyan),
+ * to the right is the OLD buffer (idle / dim white).
+ * ============================================================ */
+
+// Buffer A — idle / awaiting-biometrics state
+const OLD_BUFFER = [
+  "▒░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░",
+  "[ LOPES · BIOFIELD · IV ]               BUFFER A · IDLE              [ STAND BY ]                ",
+  "                                                                                                  ",
+  ".. SENSOR_A ..  CH 01   STATUS  OFFLINE       SIGNAL  ---  dB    NOISE  ---  dB                  ",
+  ".. SENSOR_B ..  CH 02   STATUS  OFFLINE       SIGNAL  ---  dB    NOISE  ---  dB                  ",
+  ".. SENSOR_C ..  CH 03   STATUS  OFFLINE       SIGNAL  ---  dB    NOISE  ---  dB                  ",
+  ".. SENSOR_D ..  CH 04   STATUS  OFFLINE       SIGNAL  ---  dB    NOISE  ---  dB                  ",
+  "                                                                                                  ",
+  "                                                                                                  ",
+  "                       █████  █     █ █████ ████ █████ █████ █   █  █████                        ",
+  "                       █   █  █     █ █   █  █     █     █   ██  █  █                            ",
+  "                       █████  █  █  █ █████  █     █     █   █ █ █  █  ██                        ",
+  "                       █   █  █ █ █ █ █   █  █     █     █   █  ██  █   █                        ",
+  "                       █   █  ██   ██ █   █  █   █████ █████ █   █  █████                        ",
+  "                                                                                                  ",
+  "                  █████  █  █████ █     █ █████ █████ █████ █████ █  █████ █████                 ",
+  "                  █   █  █ █    █ ██   ██ █     █   █ █   █ █   █ █ █     █                      ",
+  "                  █████  █ █    █ █ █ █ █ █████ █████ █████ █████ █ █     █████                  ",
+  "                  █   █  █ █    █ █  █  █ █     █   █ █  █  █     █ █         █                  ",
+  "                  █████  █  █████ █     █ █████ █   █ █   █ █     █  █████ █████                 ",
+  "                                                                                                  ",
+  "                                                                                                  ",
+  "░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░",
+  "[ CALIBRATING · NO SUBJECT DETECTED · 00:00:00 ]                                                  ",
+];
+
+// Buffer B — active / parallel-health-economy state
+const NEW_BUFFER = [
+  "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓",
+  "[ LOPES · BIOFIELD · IV ]               BUFFER B · LIVE              [ STREAM ACTIVE ]           ",
+  "                                                                                                  ",
+  "** SENSOR_A **  CH 01   STATUS  ◉ ACTIVE     SIGNAL  −18  dB    NOISE  −62  dB                   ",
+  "** SENSOR_B **  CH 02   STATUS  ◉ ACTIVE     SIGNAL  −22  dB    NOISE  −60  dB                   ",
+  "** SENSOR_C **  CH 03   STATUS  ◉ ACTIVE     SIGNAL  −16  dB    NOISE  −64  dB                   ",
+  "** SENSOR_D **  CH 04   STATUS  ◉ ACTIVE     SIGNAL  −20  dB    NOISE  −63  dB                   ",
+  "                                                                                                  ",
+  "                                                                                                  ",
+  "      █████ █   █ █████   █████  █████ █████ █████ █     █     █████ █                           ",
+  "        █   █   █ █       █   █  █   █ █   █ █   █ █     █     █     █                           ",
+  "        █   █████ █████   █████  █████ █████ █████ █     █     █████ █                           ",
+  "        █   █   █ █       █      █   █ █  █  █   █ █     █     █     █                           ",
+  "        █   █   █ █████   █      █   █ █   █ █   █ █████ █████ █████ █████                       ",
+  "                                                                                                  ",
+  "      █   █ █████ █████ █     █████ █   █ █████ █████ █████ █████ █████ █████ █████              ",
+  "      █   █ █     █   █ █       █   █   █ █     █     █   █ █   █ █   █ █   █ █   █              ",
+  "      █████ █████ █████ █       █   █████ █████ █     █████ █████ █   █ █████ █████              ",
+  "      █   █ █     █   █ █       █   █   █     █ █     █  █  █   █ █   █ █  █  █                  ",
+  "      █   █ █████ █   █ █████   █   █   █ █████ █████ █   █ █████ █████ █   █ █                  ",
+  "                                                                                                  ",
+  "                                                                                                  ",
+  "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓",
+  "[ SUBJECT  LOPES, J ]  [ PROTOCOL  DAINGLE-04 ]  [ COHERENCE  98% ]  [ ▮ rec ]                   ",
+];
+
+export function SpectralScanCurtain({ phase, coverMs, uncoverMs }: Props) {
+  const isCovering = phase === "covering";
+  const sweepDuration = (isCovering ? coverMs : uncoverMs) / 1000;
+
+  return (
+    <motion.div
+      key="spectral-scan"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: isCovering ? 1 : 0 }}
+      transition={{ duration: 0.12 }}
+      className="fixed inset-0 z-[100] overflow-hidden bg-[#040608] pointer-events-none"
+      style={{ fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace" }}
+    >
+      {/* Phosphor scanlines */}
+      <div
+        className="absolute inset-0 opacity-25 pointer-events-none"
+        style={{
+          backgroundImage:
+            "repeating-linear-gradient(0deg, transparent 0, transparent 2px, rgba(0,240,255,0.05) 2px, rgba(0,240,255,0.05) 3px)",
+        }}
+      />
+      {/* CRT vignette */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.7) 100%)",
+        }}
+      />
+
+      {/* Buffer A — OLD / idle (visible to the right of the scanner) */}
+      <pre className="absolute inset-0 whitespace-pre p-8 text-[clamp(10px,1.05vw,14px)] leading-[1.5] tracking-tight text-paper/35">
+        {OLD_BUFFER.join("\n")}
+      </pre>
+
+      {/* Buffer B — NEW / active (clip-path reveals as scanner sweeps right) */}
+      <motion.div
+        initial={{ clipPath: "inset(0 100% 0 0)" }}
+        animate={{
+          clipPath: isCovering ? "inset(0 0% 0 0)" : "inset(0 100% 0 0)",
+        }}
+        transition={{ duration: sweepDuration, ease: "linear" }}
+        className="absolute inset-0"
+      >
+        <pre
+          className="absolute inset-0 whitespace-pre p-8 text-[clamp(10px,1.05vw,14px)] leading-[1.5] tracking-tight"
+          style={{
+            color: "rgba(120, 240, 255, 0.92)",
+            textShadow:
+              "0 0 4px rgba(0, 240, 255, 0.6), 0 0 8px rgba(0, 240, 255, 0.3)",
+          }}
+        >
+          {NEW_BUFFER.join("\n")}
+        </pre>
+      </motion.div>
+
+      {/* SCANNER LINE — bright cyan vertical bar with glow + soft trail */}
+      <motion.div
+        initial={{ left: "0%" }}
+        animate={{ left: isCovering ? "100%" : "0%" }}
+        transition={{ duration: sweepDuration, ease: "linear" }}
+        className="absolute inset-y-0 w-px"
+        style={{
+          background: "rgba(180, 250, 255, 0.95)",
+          boxShadow:
+            "0 0 14px rgba(0, 240, 255, 1), 0 0 28px rgba(0, 240, 255, 0.7), 0 0 56px rgba(0, 240, 255, 0.35)",
+        }}
+      >
+        {/* Trailing afterglow behind the scanner */}
+        <div
+          className="absolute right-0 top-0 h-full w-64 -mr-px"
+          style={{
+            background:
+              "linear-gradient(270deg, rgba(0, 240, 255, 0.18), transparent)",
+          }}
+        />
+      </motion.div>
+
+      {/* Top status strip */}
+      <div className="absolute inset-x-0 top-0 border-b border-cyan-300/15 bg-black/70 px-6 py-2">
+        <div className="mx-auto flex max-w-[1280px] items-center justify-between font-mono text-[10px] uppercase tracking-[0.3em] text-paper/65">
+          <div className="flex items-center gap-5">
+            <span className="text-cyan-300">●</span>
+            <span className="text-paper">Spectral · Scan</span>
+            <span className="text-paper/45">Sweep · in progress</span>
+          </div>
+          <div className="text-paper/55">
+            {new Date().toISOString().slice(0, 10).replace(/-/g, "/")}
+            {" · "}
+            <span className="text-paper">{new Date().toISOString().slice(11, 19)}</span>
+            {" UTC"}
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}

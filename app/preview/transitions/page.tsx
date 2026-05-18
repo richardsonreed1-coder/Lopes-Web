@@ -19,6 +19,13 @@ const ENTRIES: Entry[] = [
     tag: "Live",
   },
   {
+    name: "Capital Markets — Order Book Collision",
+    color: "#7A4FD9",
+    variant: "order-book-collision",
+    desc: "Two walls of book data (bids in blue, asks in red) close in toward center, collide in a white flash, shatter into 140 ASCII particles that disperse and fade as the section title fades in.",
+    tag: "Candidate",
+  },
+  {
     name: "Real Estate",
     color: "#8C6A2A",
     variant: "rolling-door",
@@ -58,6 +65,13 @@ const ENTRIES: Entry[] = [
     color: "#244B4F",
     variant: "led-panel",
     desc: "Photobiomodulation panel: brushed-aluminum housing, 5×7 grid of red LEDs ignite in an expanding wave from center.",
+    tag: "Candidate",
+  },
+  {
+    name: "Healthcare — Spectral Scan",
+    color: "#244B4F",
+    variant: "spectral-scan",
+    desc: "Two terminal buffers: idle (AWAITING BIOMETRICS) on the right, active (PARALLEL HEALTH ECONOMY) on the left. A bright cyan scanner line sweeps across, replacing one with the other.",
     tag: "Candidate",
   },
   {

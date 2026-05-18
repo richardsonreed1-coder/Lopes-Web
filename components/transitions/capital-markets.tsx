@@ -323,3 +323,224 @@ export function CandlestickCurtain({ phase, coverMs, uncoverMs }: Props) {
     </motion.div>
   );
 }
+
+/* ============================================================
+ * ORDER BOOK COLLISION — two opposing walls of terminal data
+ * (bids in blue, asks in red) close in toward center, collide
+ * in a white kinetic flash, then shatter into a particle burst
+ * of ASCII characters that decelerate and fade.
+ * ============================================================ */
+
+const WALL_ROWS = 50;
+const PARTICLE_CHARS = ["+", ".", "1", "0", ":", "-", "·", "|", "/", "\\"];
+const PARTICLE_COUNT = 140;
+
+// Deterministic PRNG so the burst is the same every replay.
+function mulberry32(seed: number) {
+  return function () {
+    seed = (seed + 0x6d2b79f5) >>> 0;
+    let t = seed;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+const rand = mulberry32(0xc0ffee);
+
+type Particle = {
+  id: number;
+  dx: number;
+  dy: number;
+  char: string;
+  color: string;
+  duration: number;
+};
+
+const PARTICLES: Particle[] = Array.from({ length: PARTICLE_COUNT }, (_, i) => {
+  const angle = rand() * Math.PI * 2;
+  const speed = 240 + rand() * 520;
+  return {
+    id: i,
+    dx: Math.cos(angle) * speed,
+    dy: Math.sin(angle) * speed,
+    char: PARTICLE_CHARS[Math.floor(rand() * PARTICLE_CHARS.length)],
+    color: rand() < 0.5 ? "#7ab8ff" : "#ff6a6a",
+    duration: 1.1 + rand() * 0.7,
+  };
+});
+
+// Bid/ask rows of plausible book data — generated once.
+const BID_ROWS = Array.from({ length: WALL_ROWS }, (_, i) => {
+  const px = (184.20 - i * 0.02).toFixed(2);
+  const sz = (100 + Math.abs(Math.floor(Math.sin(i * 1.7) * 1800))).toString().padStart(5, " ");
+  return `B  ${px}  ×${sz}  █████`;
+});
+const ASK_ROWS = Array.from({ length: WALL_ROWS }, (_, i) => {
+  const px = (184.22 + i * 0.02).toFixed(2);
+  const sz = (100 + Math.abs(Math.floor(Math.cos(i * 1.3) * 1800))).toString().padStart(5, " ");
+  return `█████  ${sz}×  ${px}  A`;
+});
+
+export function OrderBookCollisionCurtain({ phase, coverMs, uncoverMs }: Props) {
+  const isCovering = phase === "covering";
+
+  // Phase timing as a fraction of coverMs
+  const approachEnd = 0.45;   // walls have met by 45% through cover
+  const flashStart  = 0.45;
+  const flashEnd    = 0.55;
+  const particleStart = 0.52;
+  const payloadStart  = 0.80;
+
+  const coverSec = coverMs / 1000;
+  const uncoverSec = uncoverMs / 1000;
+
+  return (
+    <motion.div
+      key="order-book-collision"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: isCovering ? 1 : 0 }}
+      transition={{ duration: isCovering ? 0.12 : uncoverSec, ease: "easeOut" }}
+      className="fixed inset-0 z-[100] overflow-hidden bg-black pointer-events-none"
+    >
+      {/* Terminal scanlines */}
+      <div
+        className="absolute inset-0 opacity-25 pointer-events-none"
+        style={{
+          backgroundImage:
+            "repeating-linear-gradient(0deg, transparent 0, transparent 2px, rgba(120,180,255,0.05) 2px, rgba(120,180,255,0.05) 3px)",
+        }}
+      />
+
+      {/* LEFT WALL — bids, blue */}
+      <motion.div
+        initial={{ x: "-100%" }}
+        animate={{
+          x: isCovering ? "0%" : "-100%",
+          opacity: isCovering ? [1, 1, 0] : 1,
+        }}
+        transition={{
+          x: { duration: coverSec * approachEnd, ease: [0.55, 0, 0.65, 0] },
+          opacity: {
+            duration: 0.08,
+            delay: coverSec * flashEnd,
+            times: [0, 0.5, 1],
+          },
+        }}
+        className="absolute left-0 top-0 h-full w-1/2 overflow-hidden"
+        style={{
+          background: "linear-gradient(90deg, #0a1430 0%, #142a5e 60%, #1d3d82 100%)",
+          boxShadow: "inset -20px 0 40px rgba(0,0,0,0.6)",
+        }}
+      >
+        <pre className="absolute inset-0 whitespace-pre p-4 font-mono text-[11px] leading-[14px] tracking-wide text-[#7ab8ff]/85">
+          {BID_ROWS.join("\n")}
+        </pre>
+        {/* Wall depth — repeating bid header */}
+        <div className="absolute left-4 top-2 font-mono text-[9px] uppercase tracking-[0.4em] text-[#cfe4ff]/65">
+          BIDS · DOM
+        </div>
+      </motion.div>
+
+      {/* RIGHT WALL — asks, red */}
+      <motion.div
+        initial={{ x: "100%" }}
+        animate={{
+          x: isCovering ? "0%" : "100%",
+          opacity: isCovering ? [1, 1, 0] : 1,
+        }}
+        transition={{
+          x: { duration: coverSec * approachEnd, ease: [0.55, 0, 0.65, 0] },
+          opacity: {
+            duration: 0.08,
+            delay: coverSec * flashEnd,
+            times: [0, 0.5, 1],
+          },
+        }}
+        className="absolute right-0 top-0 h-full w-1/2 overflow-hidden"
+        style={{
+          background: "linear-gradient(270deg, #1a0a0a 0%, #4a1414 60%, #7a1a1a 100%)",
+          boxShadow: "inset 20px 0 40px rgba(0,0,0,0.6)",
+        }}
+      >
+        <pre className="absolute inset-0 whitespace-pre p-4 text-right font-mono text-[11px] leading-[14px] tracking-wide text-[#ff8a8a]/85">
+          {ASK_ROWS.join("\n")}
+        </pre>
+        <div className="absolute right-4 top-2 font-mono text-[9px] uppercase tracking-[0.4em] text-[#ffd0d0]/65">
+          ASKS · DOM
+        </div>
+      </motion.div>
+
+      {/* FLASH — white kinetic impact across the screen */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isCovering ? [0, 1, 0.4, 0] : 0 }}
+        transition={{
+          duration: coverSec * (flashEnd - flashStart) + 0.05,
+          delay: coverSec * flashStart,
+          times: [0, 0.25, 0.6, 1],
+          ease: "easeOut",
+        }}
+        className="absolute inset-0 bg-white"
+        style={{ mixBlendMode: "screen" }}
+      />
+
+      {/* PARTICLE BURST — characters spray outward from the impact point */}
+      {isCovering && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="relative h-0 w-0">
+            {PARTICLES.map((p) => (
+              <motion.span
+                key={p.id}
+                initial={{ x: 0, y: 0, opacity: 0, scale: 1.4 }}
+                animate={{
+                  x: p.dx,
+                  y: p.dy,
+                  opacity: [0, 1, 1, 0],
+                  scale: [1.4, 1, 0.9, 0.6],
+                }}
+                transition={{
+                  duration: p.duration,
+                  delay: coverSec * particleStart,
+                  ease: [0.16, 1, 0.3, 1],
+                  times: [0, 0.05, 0.5, 1],
+                }}
+                className="absolute font-mono text-[16px] font-bold leading-none"
+                style={{
+                  color: p.color,
+                  textShadow: `0 0 6px ${p.color}, 0 0 12px ${p.color}80`,
+                  willChange: "transform, opacity",
+                }}
+              >
+                {p.char}
+              </motion.span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* PAYLOAD — section title revealed behind the dispersing particles */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isCovering ? 1 : 0 }}
+        transition={{
+          duration: 0.45,
+          delay: coverSec * payloadStart,
+          ease: "easeOut",
+        }}
+        className="absolute inset-0 flex items-center justify-center"
+      >
+        <div className="text-center">
+          <div className="font-mono text-[10px] uppercase tracking-[0.5em] text-paper/55">
+            VOL. I · CAPITAL MARKETS
+          </div>
+          <div className="mt-4 font-display text-[clamp(40px,6vw,80px)] font-medium italic leading-none text-paper">
+            Pricing the distortion.
+          </div>
+          <div className="mt-4 font-mono text-[10px] uppercase tracking-[0.4em] text-paper/45">
+            Spread crossed · {new Date().toISOString().slice(11, 19)}
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}

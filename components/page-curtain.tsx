@@ -4,13 +4,17 @@ import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { RollingDoorCurtain } from "@/components/rolling-door-curtain";
-import { CandlestickCurtain } from "@/components/transitions/capital-markets";
+import {
+  CandlestickCurtain,
+  OrderBookCollisionCurtain,
+} from "@/components/transitions/capital-markets";
 import { ChalkboardCurtain } from "@/components/transitions/education";
 import {
   EkgMonitorCurtain,
   LaserScanCurtain,
   FrequencyTunerCurtain,
   LedPanelCurtain,
+  SpectralScanCurtain,
 } from "@/components/transitions/healthcare";
 import { TheaterCurtainsCurtain } from "@/components/transitions/media";
 import type { CurtainVariant } from "@/components/curtain-link";
@@ -28,11 +32,13 @@ const TIMING: Record<CurtainVariant, Timing> = {
   default:            { cover: 500, navAt: 420, hold: 280, uncover: 500 },
   "rolling-door":     { cover: 650, navAt: 540, hold: 420, uncover: 950 },
   "candlestick":      { cover: 900, navAt: 760, hold: 700, uncover: 600 },
+  "order-book-collision": { cover: 1500, navAt: 1100, hold: 500, uncover: 400 },
   "chalkboard":       { cover: 550, navAt: 460, hold: 800, uncover: 550 },
   "ekg-monitor":      { cover: 900, navAt: 760, hold: 600, uncover: 500 },
   "laser-scan":       { cover: 1100, navAt: 940, hold: 500, uncover: 500 },
   "frequency-tuner":  { cover: 900, navAt: 760, hold: 600, uncover: 500 },
   "led-panel":        { cover: 800, navAt: 680, hold: 600, uncover: 500 },
+  "spectral-scan":    { cover: 1100, navAt: 940, hold: 500, uncover: 600 },
   "theater-curtains": { cover: 750, navAt: 620, hold: 450, uncover: 800 },
 };
 
@@ -95,6 +101,9 @@ export function PageCurtain() {
       {visible && variant === "candlestick" && (
         <CandlestickCurtain phase={activePhase} coverMs={t.cover} uncoverMs={t.uncover} />
       )}
+      {visible && variant === "order-book-collision" && (
+        <OrderBookCollisionCurtain phase={activePhase} coverMs={t.cover} uncoverMs={t.uncover} />
+      )}
       {visible && variant === "chalkboard" && (
         <ChalkboardCurtain phase={activePhase} coverMs={t.cover} uncoverMs={t.uncover} />
       )}
@@ -109,6 +118,9 @@ export function PageCurtain() {
       )}
       {visible && variant === "led-panel" && (
         <LedPanelCurtain phase={activePhase} coverMs={t.cover} uncoverMs={t.uncover} />
+      )}
+      {visible && variant === "spectral-scan" && (
+        <SpectralScanCurtain phase={activePhase} coverMs={t.cover} uncoverMs={t.uncover} />
       )}
       {visible && variant === "theater-curtains" && (
         <TheaterCurtainsCurtain phase={activePhase} coverMs={t.cover} uncoverMs={t.uncover} />

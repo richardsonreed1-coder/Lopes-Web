@@ -1,7 +1,5 @@
 "use client";
 
-import { motion } from "motion/react";
-
 type Props = {
   phase: "covering" | "uncovering";
   coverMs: number;
@@ -15,17 +13,17 @@ type Props = {
  * speckle. Slams down on cover, lifts off on uncover.
  */
 export function RollingDoorCurtain({ phase, coverMs, uncoverMs }: Props) {
+  const isCovering = phase === "covering";
+  const coverSec = coverMs / 1000;
+  const uncoverSec = uncoverMs / 1000;
   return (
-    <motion.div
-      key="rolling-door"
-      initial={{ y: "-100%" }}
-      animate={{ y: phase === "covering" ? "0%" : "-100%" }}
-      transition={
-        phase === "covering"
-          ? { duration: coverMs / 1000, ease: [0.7, 0, 0.84, 0] }
-          : { duration: uncoverMs / 1000, ease: [0.16, 1, 0.3, 1] }
-      }
+    <div
       className="fixed inset-0 z-[100] pointer-events-none"
+      style={{
+        animation: isCovering
+          ? `rdSlam ${coverSec}s cubic-bezier(0.7,0,0.84,0) both`
+          : `rdLift ${uncoverSec}s cubic-bezier(0.16,1,0.3,1) both`,
+      }}
     >
       {/* SVG defs for the stenciled paint filter */}
       <svg aria-hidden="true" className="absolute -top-px -left-px h-px w-px">
@@ -232,8 +230,36 @@ export function RollingDoorCurtain({ phase, coverMs, uncoverMs }: Props) {
 
         {/* Concrete floor */}
         <ConcreteFloor />
+
+        {/* Resolve scrim — darkens the busy door so the thesis reads */}
+        <div
+          className="absolute inset-0 z-[4] pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(120% 90% at 50% 46%, rgba(8,7,6,0.74) 0%, rgba(8,7,6,0.55) 42%, rgba(8,7,6,0.80) 100%)",
+            animation: `rdScrim 0.7s ease-out ${((coverMs / 1000) * 0.5).toFixed(2)}s both`,
+          }}
+        />
+        {/* Section thesis — resolves after the door lands (CSS-driven) */}
+        <div className="absolute inset-0 z-[5] flex items-center justify-center px-8 pointer-events-none">
+          <div
+            className="text-center"
+            style={{ animation: `rdRise 0.6s cubic-bezier(0.16,1,0.3,1) ${((coverMs / 1000) * 0.6).toFixed(2)}s both` }}
+          >
+            <div className="font-mono text-[10px] uppercase tracking-[0.5em] text-paper/60">
+              Vol. II · Real Estate
+            </div>
+            <div
+              className="mt-4 font-display text-[clamp(38px,5.5vw,80px)] font-medium italic leading-[1.02] text-paper"
+              style={{ textShadow: "0 0 38px rgba(229,165,43,0.30), 0 2px 12px rgba(0,0,0,0.7)" }}
+            >
+              Infrastructure for the overflow.
+            </div>
+          </div>
+        </div>
+        <style>{`@keyframes rdSlam{from{transform:translateY(-100%)}to{transform:translateY(0)}}@keyframes rdLift{from{transform:translateY(0)}to{transform:translateY(-100%)}}@keyframes rdScrim{from{opacity:0}to{opacity:1}}@keyframes rdRise{0%{opacity:0;transform:translateY(16px)}100%{opacity:1;transform:none}}`}</style>
       </div>
-    </motion.div>
+    </div>
   );
 }
 

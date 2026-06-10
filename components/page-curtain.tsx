@@ -30,16 +30,16 @@ type Timing = { cover: number; navAt: number; hold: number; uncover: number };
 
 const TIMING: Record<CurtainVariant, Timing> = {
   default:            { cover: 500, navAt: 420, hold: 280, uncover: 500 },
-  "rolling-door":     { cover: 650, navAt: 540, hold: 420, uncover: 950 },
-  "candlestick":      { cover: 900, navAt: 760, hold: 700, uncover: 600 },
+  "rolling-door":     { cover: 750, navAt: 600, hold: 1100, uncover: 950 },
+  "candlestick":      { cover: 1400, navAt: 1200, hold: 800, uncover: 650 },
   "order-book-collision": { cover: 1500, navAt: 1100, hold: 500, uncover: 400 },
-  "chalkboard":       { cover: 550, navAt: 460, hold: 800, uncover: 550 },
-  "ekg-monitor":      { cover: 900, navAt: 760, hold: 600, uncover: 500 },
+  "chalkboard":       { cover: 700, navAt: 580, hold: 1000, uncover: 600 },
+  "ekg-monitor":      { cover: 1500, navAt: 1300, hold: 800, uncover: 650 },
   "laser-scan":       { cover: 1100, navAt: 940, hold: 500, uncover: 500 },
   "frequency-tuner":  { cover: 900, navAt: 760, hold: 600, uncover: 500 },
   "led-panel":        { cover: 800, navAt: 680, hold: 600, uncover: 500 },
   "spectral-scan":    { cover: 1100, navAt: 940, hold: 500, uncover: 600 },
-  "theater-curtains": { cover: 750, navAt: 620, hold: 450, uncover: 800 },
+  "theater-curtains": { cover: 850, navAt: 680, hold: 1100, uncover: 850 },
 };
 
 export function PageCurtain() {

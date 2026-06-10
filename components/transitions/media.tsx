@@ -1,7 +1,5 @@
 "use client";
 
-import { motion } from "motion/react";
-
 type Props = {
   phase: "covering" | "uncovering";
   coverMs: number;
@@ -9,9 +7,9 @@ type Props = {
 };
 
 /**
- * Theater curtains — heavy velvet drapes with vertical pleat shadows
- * meet under a gold-trimmed proscenium valance. Tassel cord at the
- * bottom hem. Clean and editorial; no stage floor / footlights.
+ * Theater curtains — heavy velvet drapes with vertical pleat shadows meet under
+ * a gold-trimmed proscenium valance, then resolve to the section thesis.
+ * CSS-driven (deterministic on mount; Framer's mount-time animate strands here).
  */
 
 const VELVET = `
@@ -36,21 +34,32 @@ const VALANCE = `
 
 export function TheaterCurtainsCurtain({ phase, coverMs, uncoverMs }: Props) {
   const isCovering = phase === "covering";
-  const tween = {
-    duration: isCovering ? coverMs / 1000 : uncoverMs / 1000,
-    ease: isCovering ? ([0.65, 0.05, 0.36, 1] as const) : ([0.16, 1, 0.3, 1] as const),
-  };
+  const coverSec = coverMs / 1000;
+  const uncoverSec = uncoverMs / 1000;
+  const coverEase = "cubic-bezier(0.65,0.05,0.36,1)";
+  const uncoverEase = "cubic-bezier(0.16,1,0.3,1)";
 
   return (
     <>
+      <style>{`
+        @keyframes tcLeftIn{from{transform:translateX(-100%)}to{transform:translateX(0)}}
+        @keyframes tcLeftOut{from{transform:translateX(0)}to{transform:translateX(-100%)}}
+        @keyframes tcRightIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
+        @keyframes tcRightOut{from{transform:translateX(0)}to{transform:translateX(100%)}}
+        @keyframes tcValIn{from{transform:translateY(-100%)}to{transform:translateY(0)}}
+        @keyframes tcValOut{from{transform:translateY(0)}to{transform:translateY(-100%)}}
+        @keyframes tcRise{0%{opacity:0;transform:translateY(16px)}100%{opacity:1;transform:none}}
+      `}</style>
+
       {/* Left velvet panel */}
-      <motion.div
-        key="theater-left"
-        initial={{ x: "-100%" }}
-        animate={{ x: isCovering ? "0%" : "-100%" }}
-        transition={tween}
+      <div
         className="fixed left-0 top-0 bottom-0 z-[100] w-[52%] pointer-events-none"
-        style={{ background: VELVET }}
+        style={{
+          background: VELVET,
+          animation: isCovering
+            ? `tcLeftIn ${coverSec}s ${coverEase} both`
+            : `tcLeftOut ${uncoverSec}s ${uncoverEase} both`,
+        }}
       >
         {/* Inner meeting edge shadow */}
         <div className="absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-black/70 to-transparent" />
@@ -64,16 +73,17 @@ export function TheaterCurtainsCurtain({ phase, coverMs, uncoverMs }: Props) {
             boxShadow: "0 1px 2px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,235,180,0.5)",
           }}
         />
-      </motion.div>
+      </div>
 
       {/* Right velvet panel */}
-      <motion.div
-        key="theater-right"
-        initial={{ x: "100%" }}
-        animate={{ x: isCovering ? "0%" : "100%" }}
-        transition={tween}
+      <div
         className="fixed right-0 top-0 bottom-0 z-[100] w-[52%] pointer-events-none"
-        style={{ background: VELVET }}
+        style={{
+          background: VELVET,
+          animation: isCovering
+            ? `tcRightIn ${coverSec}s ${coverEase} both`
+            : `tcRightOut ${uncoverSec}s ${uncoverEase} both`,
+        }}
       >
         <div className="absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-black/70 to-transparent" />
         <div className="absolute inset-x-0 top-0 h-8 bg-gradient-to-b from-black/70 to-transparent" />
@@ -85,19 +95,17 @@ export function TheaterCurtainsCurtain({ phase, coverMs, uncoverMs }: Props) {
             boxShadow: "0 1px 2px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,235,180,0.5)",
           }}
         />
-      </motion.div>
+      </div>
 
       {/* Proscenium valance — drops from the top */}
-      <motion.div
-        key="theater-valance"
-        initial={{ y: "-100%" }}
-        animate={{ y: isCovering ? "0%" : "-100%" }}
-        transition={{
-          duration: isCovering ? (coverMs / 1000) * 0.7 : (uncoverMs / 1000) * 0.7,
-          ease: isCovering ? "easeOut" : "easeIn",
-        }}
+      <div
         className="fixed inset-x-0 top-0 z-[101] h-24 pointer-events-none md:h-32"
-        style={{ background: VALANCE }}
+        style={{
+          background: VALANCE,
+          animation: isCovering
+            ? `tcValIn ${(coverSec * 0.7).toFixed(2)}s ease-out both`
+            : `tcValOut ${(uncoverSec * 0.7).toFixed(2)}s ease-in both`,
+        }}
       >
         {/* Gold top molding */}
         <div
@@ -128,39 +136,29 @@ export function TheaterCurtainsCurtain({ phase, coverMs, uncoverMs }: Props) {
             boxShadow: "0 2px 6px rgba(0,0,0,0.6)",
           }}
         />
-      </motion.div>
+      </div>
 
-      {/* Marquee text */}
-      <motion.div
-        key="theater-marquee"
-        initial={{ opacity: 0, y: 6 }}
-        animate={{
-          opacity: isCovering ? 1 : 0,
-          y: isCovering ? 0 : 6,
-        }}
-        transition={{
-          delay: isCovering ? (coverMs / 1000) * 0.6 : 0,
-          duration: 0.35,
-          ease: "easeOut",
-        }}
-        className="fixed inset-0 z-[102] flex items-center justify-center pointer-events-none"
+      {/* Section thesis — resolves once the drapes meet */}
+      <div
+        className="fixed inset-0 z-[102] flex items-center justify-center text-center pointer-events-none"
+        style={
+          isCovering
+            ? { animation: `tcRise 0.6s cubic-bezier(0.16,1,0.3,1) ${(coverSec * 0.62).toFixed(2)}s both` }
+            : { opacity: 0, transition: `opacity ${uncoverSec.toFixed(2)}s ease` }
+        }
       >
-        <div className="text-center">
-          <div
-            className="font-display text-[clamp(36px,5vw,72px)] font-medium italic leading-none"
-            style={{
-              color: "#e8d09a",
-              textShadow:
-                "0 1px 0 rgba(255,255,255,0.25), 0 -1px 0 rgba(0,0,0,0.7), 0 4px 14px rgba(0,0,0,0.6)",
-            }}
-          >
-            Lopes
+        <div>
+          <div className="font-mono text-[10px] uppercase tracking-[0.5em] text-amber-200/65">
+            Vol. V · Media &amp; Consumer
           </div>
-          <div className="mt-3 font-mono text-[10px] uppercase tracking-[0.6em] text-amber-200/70">
-            Now Showing · Vol. V
+          <div
+            className="mt-4 font-display text-[clamp(38px,5.5vw,80px)] font-medium italic leading-[1.02] text-paper"
+            style={{ textShadow: "0 0 40px rgba(232,208,154,0.35), 0 2px 12px rgba(0,0,0,0.65)" }}
+          >
+            The infrastructure of influence.
           </div>
         </div>
-      </motion.div>
+      </div>
     </>
   );
 }

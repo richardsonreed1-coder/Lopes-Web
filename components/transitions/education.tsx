@@ -1,7 +1,5 @@
 "use client";
 
-import { motion } from "motion/react";
-
 type Props = {
   phase: "covering" | "uncovering";
   coverMs: number;
@@ -13,17 +11,19 @@ type Props = {
  * a felt eraser sweeps across the chalk word, slides off other side.
  */
 export function ChalkboardCurtain({ phase, coverMs, uncoverMs }: Props) {
+  const isCovering = phase === "covering";
+  const coverSec = coverMs / 1000;
+  const uncoverSec = uncoverMs / 1000;
   return (
-    <motion.div
-      key="chalkboard"
-      initial={{ x: "-100%" }}
-      animate={{ x: phase === "covering" ? "0%" : "100%" }}
-      transition={{
-        duration: phase === "covering" ? coverMs / 1000 : uncoverMs / 1000,
-        ease: phase === "covering" ? [0.7, 0, 0.84, 0] : [0.16, 1, 0.3, 1],
-      }}
+    <div
       className="fixed inset-0 z-[100] pointer-events-none"
+      style={{
+        animation: isCovering
+          ? `cbIn ${coverSec}s cubic-bezier(0.7,0,0.84,0) both`
+          : `cbOut ${uncoverSec}s cubic-bezier(0.16,1,0.3,1) both`,
+      }}
     >
+      <style>{`@keyframes cbIn{from{transform:translateX(-100%)}to{transform:translateX(0)}}@keyframes cbOut{from{transform:translateX(0)}to{transform:translateX(100%)}}@keyframes cbErase{0%{transform:translate(-30%,-50%);opacity:0}8%{opacity:1}100%{transform:translate(130%,-50%);opacity:1}}`}</style>
       {/* SVG defs — chalk paint filter for irregular edges */}
       <svg aria-hidden="true" className="absolute -top-px -left-px h-px w-px">
         <defs>
@@ -95,70 +95,62 @@ export function ChalkboardCurtain({ phase, coverMs, uncoverMs }: Props) {
         {/* Slate inset shadow + glassy reflection */}
         <div className="absolute inset-0 shadow-[inset_0_0_70px_rgba(0,0,0,0.65),inset_0_0_2px_rgba(255,255,255,0.08)] pointer-events-none" />
 
-        {/* Chalk text — irregular edges via filter */}
+        {/* Chalk text — eyebrow + emphasis, irregular edges via filter */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <svg
-            viewBox="0 0 800 220"
-            className="h-auto w-[78%]"
-          >
-            {/* Chalk halo (ghost) */}
+          <svg viewBox="0 0 1000 360" className="h-auto w-[84%]">
+            {/* Eyebrow in mono chalk */}
             <text
-              x="400"
-              y="135"
+              x="500"
+              y="58"
               textAnchor="middle"
-              fontFamily='"Fraunces", "EB Garamond", Georgia, serif'
-              fontSize="148"
-              fontStyle="italic"
-              fontWeight="400"
-              fill="rgba(255,250,235,0.18)"
+              fontFamily="ui-monospace, SFMono-Regular, monospace"
+              fontSize="15"
+              fill="rgba(255,250,235,0.58)"
+              letterSpacing="9"
               filter="url(#chalk-rough)"
             >
-              Education.
+              VOL. III · EDUCATION
             </text>
-            {/* Main chalk stroke */}
+            {/* Emphasis — chalk Fraunces italic, two lines */}
             <text
-              x="400"
-              y="135"
+              x="500"
+              y="190"
               textAnchor="middle"
               fontFamily='"Fraunces", "EB Garamond", Georgia, serif'
-              fontSize="148"
+              fontSize="92"
               fontStyle="italic"
               fontWeight="400"
               fill="rgba(255,250,235,0.92)"
               filter="url(#chalk-rough)"
               style={{ filter: "url(#chalk-rough) drop-shadow(0 0 8px rgba(255,255,235,0.18))" }}
             >
-              Education.
+              The new architecture
             </text>
-            {/* Subtitle in mono caps — small chalk handwriting */}
             <text
-              x="400"
-              y="190"
+              x="500"
+              y="296"
               textAnchor="middle"
-              fontFamily="ui-monospace, SFMono-Regular, monospace"
-              fontSize="14"
-              fill="rgba(255,250,235,0.55)"
-              letterSpacing="6"
+              fontFamily='"Fraunces", "EB Garamond", Georgia, serif'
+              fontSize="92"
+              fontStyle="italic"
+              fontWeight="400"
+              fill="rgba(255,250,235,0.92)"
               filter="url(#chalk-rough)"
+              style={{ filter: "url(#chalk-rough) drop-shadow(0 0 8px rgba(255,255,235,0.18))" }}
             >
-              §02 · THE NEW ARCHITECTURE OF LEARNING
+              of learning.
             </text>
           </svg>
         </div>
 
-        {/* Chalk eraser sweep — felt block with wooden back */}
-        <motion.div
-          initial={{ x: "-30%", opacity: 0 }}
-          animate={{
-            x: phase === "covering" ? "130%" : "-30%",
-            opacity: 1,
-          }}
-          transition={{
-            delay: phase === "covering" ? coverMs / 2000 : 0,
-            duration: 0.7,
-            ease: "easeInOut",
-          }}
-          className="absolute top-1/2 -translate-y-1/2 h-16 w-32"
+        {/* Chalk eraser sweep — felt block with wooden back (CSS-driven) */}
+        <div
+          className="absolute top-1/2 h-16 w-32"
+          style={
+            isCovering
+              ? { animation: `cbErase 0.7s ease-in-out ${(coverMs / 2000).toFixed(2)}s both` }
+              : { transform: "translate(-30%,-50%)", opacity: 0 }
+          }
         >
           {/* Chalk dust trail behind */}
           <div className="absolute -inset-y-2 -left-12 w-12 bg-gradient-to-r from-transparent to-white/35 blur-[3px]" />
@@ -192,7 +184,7 @@ export function ChalkboardCurtain({ phase, coverMs, uncoverMs }: Props) {
           />
           {/* Chalk-stained underside */}
           <div className="absolute inset-x-0 bottom-0 h-2 rounded-b-sm bg-white/55 blur-[2px]" />
-        </motion.div>
+        </div>
 
         {/* Chalk tray with chalk pieces */}
         <div
@@ -211,6 +203,6 @@ export function ChalkboardCurtain({ phase, coverMs, uncoverMs }: Props) {
           <div className="absolute left-[70%] top-1 h-2 w-8 rounded-sm bg-gradient-to-b from-[#f6f0db] to-[#d8cfb0] shadow-[0_1px_1px_rgba(0,0,0,0.5)]" />
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

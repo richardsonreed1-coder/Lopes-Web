@@ -20,6 +20,21 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Intake portals (/apply, /submit)
+
+The Applications and Deal Submission forms email submissions (with attachments)
+via [Resend](https://resend.com). Configure in `.env.local` (and on your host):
+
+```bash
+RESEND_API_KEY=re_xxxxxxxx     # from resend.com → API Keys
+PORTAL_TO_EMAIL=you@email.com  # destination inbox; until a domain is verified
+                               # with Resend this must be the Resend account email
+# PORTAL_FROM_EMAIL="Lopes Capital <intake@yourdomain.com>"  # optional, after domain verification
+```
+
+Without these set, development builds log submissions to the console and report
+success (so the UI can be tested); production returns an error.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

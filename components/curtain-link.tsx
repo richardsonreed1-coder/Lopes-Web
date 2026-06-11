@@ -24,6 +24,8 @@ type Props = {
   /** Choose the curtain visual that plays during this navigation. */
   variant?: CurtainVariant;
   className?: string;
+  /** Inline style passthrough — used to set per-link CSS vars (e.g. --acc). */
+  style?: React.CSSProperties;
   ariaLabel?: string;
   children: React.ReactNode;
 };
@@ -38,6 +40,7 @@ export function CurtainLink({
   label,
   variant = "default",
   className,
+  style,
   ariaLabel,
   children,
 }: Props) {
@@ -53,6 +56,7 @@ export function CurtainLink({
     <Link
       href={href}
       className={className}
+      style={style}
       aria-label={ariaLabel}
       onClick={(e) => {
         if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1) return;

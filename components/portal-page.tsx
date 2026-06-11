@@ -93,7 +93,8 @@ export function PortalPage({
               receivedNote={receivedNote}
             />
             <aside className="order-first lg:order-none">
-              <div className="rounded-sm border border-rule bg-ink-2 p-6">
+              <div className="relative overflow-hidden rounded-sm border border-rule bg-ink-2 p-6">
+                <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-paper/25 to-transparent" />
                 <div className="text-[10px] uppercase tracking-[0.3em] text-paper-mute">
                   §00 · The fine print
                 </div>

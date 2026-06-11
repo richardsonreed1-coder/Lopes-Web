@@ -193,8 +193,9 @@ export default function HomePage() {
             style={revealDelay(1)}
             className={`${REVEAL_BASE} ${revealState} flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.3em] text-purple-2`}
           >
+            <span className="ledger-dot h-1.5 w-1.5 rounded-full bg-purple-2" />
             <span>{dateline || " "}</span>
-            <span className="h-px flex-1 bg-paper/10" />
+            <span className="h-px flex-1 bg-gradient-to-r from-purple-2/40 via-paper/10 to-transparent" />
             <span className="text-paper/45">Operators since 2017</span>
           </motion.div>
 
@@ -204,7 +205,7 @@ export default function HomePage() {
           >
             The architecture
             <br />
-            of <em className="italic font-medium text-purple-2">capital</em>.
+            of <em className="hero-glow italic font-medium text-purple-2">capital</em>.
           </motion.h1>
 
           <motion.p
@@ -227,7 +228,7 @@ export default function HomePage() {
           </span>
         </motion.div>
 
-        <div className="overflow-hidden rounded-2xl border border-paper/10 bg-paper/[0.02] backdrop-blur-md">
+        <div className="overflow-hidden rounded-2xl border border-paper/10 bg-paper/[0.02] shadow-[inset_0_1px_0_rgba(244,239,227,0.06)] backdrop-blur-md">
           {SECTORS.map((s, i) => (
             <motion.div key={s.href} style={revealDelay(5 + i)} className={`${REVEAL_BASE} ${revealState}`}>
               <CurtainLink
@@ -236,10 +237,16 @@ export default function HomePage() {
                 label={`Opening ${s.title.toLowerCase()}`}
                 variant={s.variant}
                 ariaLabel={`${s.title} — ${s.emphasis}`}
+                style={{ "--acc": s.displayAccent } as React.CSSProperties}
                 className={`group relative grid grid-cols-[auto_1fr_auto] items-center gap-5 px-5 py-6 transition-colors hover:bg-paper/[0.04] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-purple-2 md:gap-8 md:px-8 md:py-7 ${
                   i < SECTORS.length - 1 ? "border-b border-paper/8" : ""
                 }`}
               >
+                {/* accent edge bar — sweeps in on hover */}
+                <div
+                  className="pointer-events-none absolute inset-y-3 left-0 w-[2px] origin-top scale-y-0 rounded-full bg-[var(--acc)] opacity-0 transition-all duration-300 ease-out group-hover:scale-y-100 group-hover:opacity-100"
+                  style={{ boxShadow: `0 0 12px ${s.displayAccent}` }}
+                />
                 {/* accent glow on hover */}
                 <div
                   className="pointer-events-none absolute -left-10 top-1/2 h-32 w-32 -translate-y-1/2 rounded-full opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-30"
@@ -250,13 +257,11 @@ export default function HomePage() {
                 <div className="flex items-center gap-4">
                   <span
                     className="font-mono text-[11px] uppercase tracking-[0.25em]"
-                    style={{ color: s.displayAccent }}
+                    style={{ color: s.displayAccent, textShadow: `0 0 14px ${s.displayAccent}40` }}
                   >
                     {s.vol}
                   </span>
-                  <span
-                    className="hidden h-9 w-9 place-content-center rounded-lg border border-paper/10 bg-paper/[0.04] text-paper/80 sm:grid"
-                  >
+                  <span className="hidden h-9 w-9 place-content-center rounded-lg border border-paper/10 bg-paper/[0.04] text-paper/80 transition-colors duration-300 group-hover:border-[var(--acc)]/40 group-hover:text-[var(--acc)] sm:grid">
                     <s.Icon size={15} strokeWidth={1.5} />
                   </span>
                 </div>
@@ -267,7 +272,7 @@ export default function HomePage() {
                     <span className="font-display text-[clamp(22px,3vw,30px)] font-medium leading-tight tracking-tight text-paper">
                       {s.title}
                     </span>
-                    <span className="font-display text-[14px] italic text-paper/55 md:text-[15px]">
+                    <span className="font-display text-[14px] italic text-paper/55 transition-colors duration-300 group-hover:text-paper/75 md:text-[15px]">
                       — {s.emphasis}
                     </span>
                   </div>
@@ -277,7 +282,7 @@ export default function HomePage() {
                 </div>
 
                 {/* right: open affordance */}
-                <div className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.25em] text-paper/55 transition-colors group-hover:text-paper">
+                <div className="flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.25em] text-paper/55 transition-colors group-hover:text-[var(--acc)]">
                   <span className="hidden sm:inline">Open</span>
                   <ArrowRight
                     size={14}
@@ -303,15 +308,25 @@ export default function HomePage() {
                   href={p.href}
                   accent={p.accent}
                   label={`Opening ${p.label.toLowerCase()}`}
-                  className="group rounded-xl border border-paper/10 bg-paper/[0.02] px-5 py-4 backdrop-blur-md transition-colors hover:border-paper/25 hover:bg-paper/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-2 focus-visible:ring-offset-2 focus-visible:ring-offset-ink"
+                  style={{ "--acc": p.accent } as React.CSSProperties}
+                  className="group relative overflow-hidden rounded-xl border border-paper/10 bg-paper/[0.02] px-5 py-4 shadow-[inset_0_1px_0_rgba(244,239,227,0.05)] backdrop-blur-md transition-colors hover:border-paper/25 hover:bg-paper/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-2 focus-visible:ring-offset-2 focus-visible:ring-offset-ink"
                 >
-                  <div className="font-mono text-[9px] uppercase tracking-[0.3em] text-paper/40">
+                  {/* corner accent bloom on hover */}
+                  <div
+                    className="pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-35"
+                    style={{ background: p.accent }}
+                  />
+                  <div className="flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.3em] text-paper/40 transition-colors duration-300 group-hover:text-paper/60">
+                    <span
+                      className="h-1 w-1 rounded-full transition-shadow duration-300"
+                      style={{ background: p.accent, boxShadow: `0 0 8px ${p.accent}80` }}
+                    />
                     {p.code}
                   </div>
                   <div className="mt-2 font-display text-[19px] font-medium tracking-tight text-paper">
                     {p.label}
                   </div>
-                  <div className="mt-1 font-display text-[13px] italic text-paper/55">
+                  <div className="mt-1 font-display text-[13px] italic text-paper/55 transition-colors duration-300 group-hover:text-paper/75">
                     {p.blurb}
                   </div>
                 </CurtainLink>
@@ -331,26 +346,38 @@ export default function HomePage() {
                   href={p.href}
                   accent={p.accent}
                   label={`Opening ${p.label.toLowerCase()}`}
-                  className="group flex flex-1 flex-col justify-between rounded-xl border border-paper/10 bg-paper/[0.02] px-5 py-4 backdrop-blur-md transition-colors hover:border-paper/25 hover:bg-paper/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-2 focus-visible:ring-offset-2 focus-visible:ring-offset-ink"
+                  style={{ "--acc": p.accent } as React.CSSProperties}
+                  className="group relative flex flex-1 flex-col justify-between overflow-hidden rounded-xl border border-paper/10 bg-paper/[0.02] px-5 py-4 shadow-[inset_0_1px_0_rgba(244,239,227,0.05)] backdrop-blur-md transition-colors hover:border-paper/25 hover:bg-paper/[0.05] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-2 focus-visible:ring-offset-2 focus-visible:ring-offset-ink"
                 >
+                  {/* accent bloom on hover */}
+                  <div
+                    className="pointer-events-none absolute -bottom-12 -right-12 h-32 w-32 rounded-full opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-30"
+                    style={{ background: p.accent }}
+                  />
                   <div className="flex items-start justify-between">
-                    <span className="font-mono text-[9px] uppercase tracking-[0.3em] text-paper/40">
+                    <span className="flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.3em] text-paper/40 transition-colors duration-300 group-hover:text-paper/60">
+                      <span
+                        className="h-1 w-1 rounded-full"
+                        style={{ background: p.accent, boxShadow: `0 0 8px ${p.accent}80` }}
+                      />
                       {p.eyebrow}
                     </span>
-                    <p.Icon size={16} strokeWidth={1.5} className="text-paper/55 transition-colors group-hover:text-paper" />
+                    <span className="grid h-8 w-8 place-content-center rounded-lg border border-paper/10 bg-paper/[0.04] text-paper/55 transition-colors duration-300 group-hover:border-[var(--acc)]/40 group-hover:text-[var(--acc)]">
+                      <p.Icon size={14} strokeWidth={1.5} />
+                    </span>
                   </div>
                   <div className="mt-6 flex items-end justify-between gap-3">
                     <div>
                       <div className="font-display text-[20px] font-medium tracking-tight text-paper">
                         {p.label}
                       </div>
-                      <div className="mt-1 font-display text-[13px] italic text-paper/55">
+                      <div className="mt-1 font-display text-[13px] italic text-paper/55 transition-colors duration-300 group-hover:text-paper/75">
                         {p.blurb}
                       </div>
                     </div>
                     <ArrowRight
                       size={14}
-                      className="mb-1 shrink-0 text-paper/45 transition-all duration-300 group-hover:translate-x-1 group-hover:text-paper"
+                      className="mb-1 shrink-0 text-paper/45 transition-all duration-300 group-hover:translate-x-1 group-hover:text-[var(--acc)]"
                     />
                   </div>
                 </CurtainLink>
@@ -362,11 +389,14 @@ export default function HomePage() {
         {/* FOOTER */}
         <motion.footer
           style={revealDelay(12)}
-          className={`${REVEAL_BASE} ${revealState} mt-20 flex flex-col items-start justify-between gap-3 border-t border-paper/10 pt-6 font-mono text-[10px] uppercase tracking-[0.25em] text-paper/45 md:flex-row md:items-center`}
+          className={`${REVEAL_BASE} ${revealState} mt-20`}
         >
-          <span>Lopes Capital · Operators since 2017</span>
-          <span>Scottsdale · Arizona</span>
-          <span>Obsidian · Vol. IX</span>
+          <div className="h-px bg-gradient-to-r from-transparent via-paper/15 to-transparent" />
+          <div className="flex flex-col items-start justify-between gap-3 pt-6 font-mono text-[10px] uppercase tracking-[0.25em] text-paper/45 md:flex-row md:items-center">
+            <span>Lopes Capital <span className="text-purple-2/60">·</span> Operators since 2017</span>
+            <span>Scottsdale <span className="text-purple-2/60">·</span> Arizona</span>
+            <span>Obsidian <span className="text-purple-2/60">·</span> Vol. IX</span>
+          </div>
         </motion.footer>
       </motion.div>
     </div>

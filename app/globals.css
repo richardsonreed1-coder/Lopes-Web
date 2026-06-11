@@ -38,3 +38,57 @@ html { overflow-x: hidden; }
   background: var(--color-purple-2);
   color: var(--color-paper);
 }
+
+/* ---------------------------------------------------------------
+ * Finish layer
+ * --------------------------------------------------------------- */
+
+/* Film grain — a fixed, faint noise wash above everything (including the
+ * curtains, so transitions read as filmic too). Pure texture; no motion. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  z-index: 300;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Thin ledger scrollbar */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(244, 239, 227, 0.18) var(--color-ink);
+}
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--color-ink); }
+::-webkit-scrollbar-thumb {
+  background: rgba(244, 239, 227, 0.16);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(122, 79, 217, 0.55); }
+
+/* Hero accent word — slow breathing violet glow */
+@keyframes hero-breathe {
+  0%, 100% { text-shadow: 0 0 28px rgba(122, 79, 217, 0.28); }
+  50%      { text-shadow: 0 0 52px rgba(122, 79, 217, 0.55), 0 0 18px rgba(122, 79, 217, 0.3); }
+}
+.hero-glow {
+  text-shadow: 0 0 28px rgba(122, 79, 217, 0.28);
+  animation: hero-breathe 5.5s ease-in-out infinite;
+}
+
+/* Live-ledger dot — soft pulse on the dateline */
+@keyframes ledger-pulse {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(122, 79, 217, 0.5); }
+  60%      { opacity: 0.6; box-shadow: 0 0 0 5px rgba(122, 79, 217, 0); }
+}
+.ledger-dot {
+  animation: ledger-pulse 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-glow, .ledger-dot { animation: none; }
+}

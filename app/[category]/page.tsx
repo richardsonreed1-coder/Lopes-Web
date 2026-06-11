@@ -162,7 +162,11 @@ export default async function CategoryPage({
                       i < 2 ? "border-b border-paper/10 sm:border-b-0" : ""
                     }`}
                   >
-                    <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-paper/45">
+                    <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] text-paper/45">
+                      <span
+                        className="h-1 w-1 rounded-full"
+                        style={{ background: accent, boxShadow: `0 0 8px ${accent}80` }}
+                      />
                       {s.label}
                     </div>
                     <div className="mt-3 font-display text-[34px] font-medium leading-none tracking-tight text-paper">

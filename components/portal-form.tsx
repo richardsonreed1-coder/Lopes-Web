@@ -121,7 +121,12 @@ export function PortalForm({
 
   if (status === "received") {
     return (
-      <div className="rounded-sm border border-rule bg-ink-2 px-8 py-16 text-center">
+      <div className="relative overflow-hidden rounded-sm border border-rule bg-ink-2 px-8 py-16 text-center">
+        {/* violet bloom behind the stamp */}
+        <div
+          className="pointer-events-none absolute left-1/2 top-1/2 h-72 w-72 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-25 blur-3xl"
+          style={{ background: "#7A4FD9" }}
+        />
         <div className="font-mono text-[10px] uppercase tracking-[0.4em] text-purple-2">
           Transmission received
         </div>
@@ -146,7 +151,9 @@ export function PortalForm({
   }
 
   return (
-    <form ref={formRef} onSubmit={onSubmit} noValidate={false} className="rounded-sm border border-rule bg-ink-2 p-6 md:p-10">
+    <form ref={formRef} onSubmit={onSubmit} noValidate={false} className="relative overflow-hidden rounded-sm border border-rule bg-ink-2 p-6 md:p-10">
+      {/* violet hairline across the top of the card */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-purple-2/60 to-transparent" />
       {/* Honeypot — hidden from humans; bots that fill it get silently dropped. */}
       <input
         type="text"
@@ -199,7 +206,7 @@ export function PortalForm({
                 <FieldLabel field={f} />
                 <label
                   htmlFor={f.name}
-                  className="flex cursor-pointer items-center justify-between gap-4 rounded-sm border border-dashed border-rule bg-ink px-4 py-4 transition-colors hover:border-paper/30 has-[:focus-visible]:border-purple-2 has-[:focus-visible]:ring-1 has-[:focus-visible]:ring-purple-2"
+                  className="flex cursor-pointer items-center justify-between gap-4 rounded-sm border border-dashed border-rule bg-ink px-4 py-4 transition-colors hover:border-purple-2/50 has-[:focus-visible]:border-purple-2 has-[:focus-visible]:ring-1 has-[:focus-visible]:ring-purple-2"
                 >
                   <span className={`truncate font-sans text-[14px] ${chosen ? "text-paper" : "text-paper/40"}`}>
                     {chosen ?? `Choose a file (${f.accept.join(", ")} · max ${f.maxMB}MB)`}
@@ -259,7 +266,7 @@ export function PortalForm({
         <button
           type="submit"
           disabled={status === "submitting"}
-          className="group inline-flex items-center gap-3 rounded-sm bg-paper px-6 py-3.5 font-mono text-[11px] font-semibold uppercase tracking-[0.25em] text-ink transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-2 focus-visible:ring-offset-2 focus-visible:ring-offset-ink disabled:cursor-not-allowed disabled:opacity-50"
+          className="group inline-flex items-center gap-3 rounded-sm bg-paper px-6 py-3.5 font-mono text-[11px] font-semibold uppercase tracking-[0.25em] text-ink transition-[opacity,box-shadow] duration-300 hover:opacity-95 hover:shadow-[0_0_28px_rgba(122,79,217,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-2 focus-visible:ring-offset-2 focus-visible:ring-offset-ink disabled:cursor-not-allowed disabled:opacity-50"
         >
           {status === "submitting" ? "Transmitting…" : submitLabel}
           <ArrowRight size={14} className="transition-transform duration-300 group-hover:translate-x-1" />

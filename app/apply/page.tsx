@@ -20,6 +20,19 @@ const FIELDS: PortalField[] = [
     half: true,
   },
   {
+    kind: "info",
+    name: "internNote",
+    text: "Internships are fully remote. Compensation depends on the track — some are paid, some are structured around the project and outcome. We'll cover specifics early in the process.",
+    showWhen: { field: "position", equals: ["Internship", "Either — best fit"] },
+  },
+  {
+    kind: "text",
+    name: "school",
+    label: "School / program",
+    placeholder: "ASU · W. P. Carey · Finance '27",
+    showWhen: { field: "position", equals: ["Internship", "Either — best fit"] },
+  },
+  {
     kind: "select",
     name: "area",
     label: "Area of interest",
@@ -73,7 +86,7 @@ export default function ApplyPage() {
       receivedNote="Your application is in. Every submission is read by a person — if there's a fit, you'll hear from us directly."
       aside={[
         { label: "Who we look for", value: "Builders and owners. Evidence of finished work beats credentials." },
-        { label: "Internships", value: "Paid, in-person in Scottsdale, scoped to a real project with a real outcome." },
+        { label: "Internships", value: "Fully remote, scoped to a real project with a real outcome. Paid for select tracks — terms covered early in the process." },
         { label: "Process", value: "One application, one conversation, one working session. No gauntlets." },
         { label: "Response", value: "If there's a fit, we reply within two weeks." },
       ]}

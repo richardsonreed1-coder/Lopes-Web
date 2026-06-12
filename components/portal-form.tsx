@@ -11,6 +11,9 @@ import { CurtainLink } from "@/components/curtain-link";
  * `endpoint`; renders idle → submitting → received states.
  */
 
+/** Show a field only while another field (a select) holds one of these values. */
+type ShowWhen = { field: string; equals: string[] };
+
 export type PortalField =
   | {
       kind: "text" | "email" | "tel" | "url";
@@ -19,6 +22,7 @@ export type PortalField =
       placeholder?: string;
       required?: boolean;
       half?: boolean;
+      showWhen?: ShowWhen;
     }
   | {
       kind: "select";
@@ -27,6 +31,7 @@ export type PortalField =
       options: string[];
       required?: boolean;
       half?: boolean;
+      showWhen?: ShowWhen;
     }
   | {
       kind: "textarea";
@@ -35,6 +40,7 @@ export type PortalField =
       placeholder?: string;
       required?: boolean;
       rows?: number;
+      showWhen?: ShowWhen;
     }
   | {
       kind: "file";
@@ -45,6 +51,14 @@ export type PortalField =
       accept: string[];
       maxMB: number;
       hint?: string;
+      showWhen?: ShowWhen;
+    }
+  | {
+      /** Inline context note — track-specific expectations, terms, etc. */
+      kind: "info";
+      name: string;
+      text: string;
+      showWhen?: ShowWhen;
     };
 
 const INPUT_CLASS =
@@ -76,7 +90,14 @@ export function PortalForm({
   const [status, setStatus] = useState<"idle" | "submitting" | "received">("idle");
   const [error, setError] = useState<string | null>(null);
   const [fileNames, setFileNames] = useState<Record<string, string>>({});
+  // Live select values — drive `showWhen` conditional fields. Hidden fields
+  // unmount, so their values never reach the submitted FormData.
+  const [selections, setSelections] = useState<Record<string, string>>({});
   const formRef = useRef<HTMLFormElement>(null);
+
+  const isVisible = (f: PortalField) =>
+    !f.showWhen || f.showWhen.equals.includes(selections[f.showWhen.field] ?? "");
+  const visibleFields = fields.filter(isVisible);
 
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -165,7 +186,17 @@ export function PortalForm({
       />
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        {fields.map((f) => {
+        {visibleFields.map((f) => {
+          if (f.kind === "info") {
+            return (
+              <div
+                key={f.name}
+                className="border-l-2 border-purple-2/50 bg-purple-2/[0.06] px-4 py-3 font-sans text-[13.5px] leading-[1.6] text-paper-dim md:col-span-2"
+              >
+                {f.text}
+              </div>
+            );
+          }
           if (f.kind === "textarea") {
             return (
               <div key={f.name} className="md:col-span-2">
@@ -186,7 +217,17 @@ export function PortalForm({
             return (
               <div key={f.name} className={f.half ? "" : "md:col-span-2"}>
                 <FieldLabel field={f} />
-                <select id={f.name} name={f.name} required={f.required} defaultValue="" className={INPUT_CLASS}>
+                <select
+                  id={f.name}
+                  name={f.name}
+                  required={f.required}
+                  defaultValue=""
+                  className={INPUT_CLASS}
+                  onChange={(e) => {
+                    const value = e.currentTarget.value;
+                    setSelections((prev) => ({ ...prev, [f.name]: value }));
+                  }}
+                >
                   <option value="" disabled>
                     Select…
                   </option>

@@ -62,7 +62,6 @@ export default async function CategoryPage({
 
   const ops = operatorsForCategory(category);
   const others = ledgers.filter((l) => l.slug !== category);
-  const volNum = ledger.vol.replace("VOL.", "");
   const accent = ledger.accent ?? ACCENT_FALLBACK[ledger.color];
   const [leadTitle, accentTitle] = splitHeadline(ledger.emphasis);
   const stats = ledger.stats ?? [];
@@ -131,7 +130,8 @@ export default async function CategoryPage({
             <div className="font-mono text-[10px] uppercase tracking-[0.3em]">
               <span style={{ color: accent }}>{ledger.vol}</span>
               <span className="text-paper/45">
-                {" "}· {ledger.title} · {ledger.meta}
+                {" "}· {ledger.title}
+                {ledger.meta ? ` · ${ledger.meta}` : ""}
               </span>
             </div>
 
@@ -359,14 +359,7 @@ export default async function CategoryPage({
 
         <footer className="border-t border-paper/10 px-8 py-8 md:px-12">
           <div className="mx-auto flex max-w-[1200px] flex-col items-start justify-between gap-3 font-mono text-[10px] uppercase tracking-[0.25em] text-paper/45 md:flex-row md:items-center">
-            <span>Lopes Capital · Internal Distribution</span>
-            <span>
-              File hash · 0x
-              <span style={{ color: accent }}>
-                {ledger.slug.replace(/-/g, "").slice(0, 8).toUpperCase()}
-              </span>
-              -{volNum}
-            </span>
+            <span>Lopes Capital</span>
             <CurtainLink href="/" accent="#7A4FD9" label="Returning to hub" variant={backVariant} className="transition-colors hover:text-paper">
               ← Back to hub
             </CurtainLink>

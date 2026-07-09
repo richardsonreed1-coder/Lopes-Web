@@ -58,36 +58,46 @@ export const ledgers: Ledger[] = [
     slug: "capital-markets",
     href: "/capital-markets",
     title: "Capital Markets",
-    emphasis: "pricing the distortion",
-    meta: "QUANT · FUNDAMENTAL · ALT-DATA",
+    emphasis: "Public Markets",
+    meta: "",
     body:
       "Alpha now lives at the edges where passive flows and algorithms have not yet commoditized intelligence. We trade the distortion with proprietary data and signal extraction.",
     thesis:
-      "The proliferation of passive capital and algorithmic trading has fundamentally distorted asset pricing. True alpha now exists only at the edges of the market, where proprietary data networks and asymmetric intelligence have not yet been commoditized.",
+      "The public side of the house is not outsourced. We run our own public book, allocating directly across the tape where listed instruments best express our views on regime, risk, and opportunity.",
     strategy:
-      "We deploy capital through quantitative and fundamental strategies designed specifically to exploit these structural dislocations. We prioritize building unconventional data pipelines and signal extraction frameworks to capture pricing inefficiencies before they reach the broader market.",
+      "We use public markets exposures to complement operating businesses, real estate, and private deals — adding liquidity, hedges, and asymmetric upside where it belongs. That work spans SPAC structures, secondaries, special situations, structured credit, event-driven trades, and listed alternatives, with an internal global macro desk reading the world independently behind it.",
     investments:
       "Algorithmic trading desks, alternative data architecture, and specialized liquidity providers.",
     positions: [
       {
-        label: "Algo desks",
+        label: "Equities",
         description:
-          "Discretionary mandate + event-driven desk. Pencil-down on every position; nothing handed off.",
+          "Concentrated long and short positions across public markets, underpinned by fundamental research, disciplined underwriting, and clearly defined catalysts.",
       },
       {
-        label: "Alt-data",
+        label: "Fixed Income",
         description:
-          "Proprietary pipelines — credit-card panels, satellite, hiring, footfall — feeding the signal extraction layer.",
+          "Strategic exposure across sovereign rates, investment-grade credit, and duration, providing portfolio ballast, liquidity, and tactical flexibility.",
       },
       {
-        label: "Liquidity",
+        label: "Credit",
         description:
-          "Specialized liquidity providers in markets where size moves price. Patient sizing, not blasting.",
+          "Opportunistic investments across structured, stressed, and special-situation credit where complexity or market dislocation creates attractive risk-adjusted returns.",
       },
       {
-        label: "Signal extraction",
+        label: "Event-Driven",
         description:
-          "The signals engine, live 2025. Where the alt-data, the macro read, and the desk meet.",
+          "Catalyst-oriented investments across mergers, restructurings, SPACs, and other special situations with asymmetric return profiles.",
+      },
+      {
+        label: "Secondaries & PIPEs",
+        description:
+          "Structured access to private and pre-public opportunities, including discounted secondary transactions and negotiated PIPE investments.",
+      },
+      {
+        label: "Global Macro",
+        description:
+          "Discretionary investments across rates, currencies, commodities, and global indices, informed by macroeconomic, policy, and geopolitical analysis.",
       },
     ],
     color: "purple",
@@ -102,16 +112,10 @@ export const ledgers: Ledger[] = [
       brightness: 1.35,
     },
     stats: [
-      { label: "Sleeves", value: "04" },
-      { label: "Year live", value: "2017" },
-      { label: "Public sleeve", value: "2019" },
-      { label: "Signals engine", value: "2025" },
-    ],
-    timeline: [
-      { year: "2017", note: "Discretionary mandate opened" },
-      { year: "2019", note: "Public sleeve activated" },
-      { year: "2022", note: "Event-driven desk staffed" },
-      { year: "2025", note: "Signals engine live" },
+      { label: "Managed", value: "In-house" },
+      { label: "Strategy sleeves", value: "06" },
+      { label: "Public arm", value: "2017" },
+      { label: "Macro desk", value: "2025" },
     ],
   },
   {
@@ -600,5 +604,4 @@ export const operators: Operator[] = [
   { num: "#028", name: "K-20 Platform", category: "Education", era: "2023 —" },
   { num: "#031", name: "Family Advisory", category: "Education", era: "2024 —" },
   { num: "#034", name: "Creator DTC Holdco", category: "Media & Consumer", era: "2024 —" },
-  { num: "#037", name: "Signals Engine", category: "Capital Markets", era: "2025 —" },
 ];

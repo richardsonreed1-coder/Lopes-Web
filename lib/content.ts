@@ -65,7 +65,7 @@ export const ledgers: Ledger[] = [
     thesis:
       "The public side of the house is not outsourced. We run our own public book, allocating directly across the tape where listed instruments best express our views on regime, risk, and opportunity.",
     strategy:
-      "We use public markets exposures to complement operating businesses, real estate, and private deals — adding liquidity, hedges, and asymmetric upside where it belongs. That work spans SPAC structures, secondaries, special situations, structured credit, event-driven trades, and listed alternatives, with an internal global macro desk reading the world independently behind it.",
+      "We use public markets exposures to complement operating businesses, real estate, and private deals — adding liquidity, hedges, and asymmetric upside where it belongs. Six sleeves span the tape, each run in-house, with a global macro desk reading the world independently behind it.",
     investments:
       "Algorithmic trading desks, alternative data architecture, and specialized liquidity providers.",
     positions: [

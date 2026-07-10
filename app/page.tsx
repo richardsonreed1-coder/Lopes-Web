@@ -76,7 +76,7 @@ type Sector = {
 };
 
 const SECTORS: Sector[] = [
-  { vol: "VOL.01", title: "Capital Markets",  emphasis: "the public domain",               meta: "QUANT · FUNDAMENTAL · ALT-DATA", href: "/capital-markets", curtainAccent: "#7A4FD9", displayAccent: "#A988F5", variant: "candlestick",      Icon: LineChart },
+  { vol: "VOL.01", title: "Capital Markets",  emphasis: "the public domain",               meta: "", href: "/capital-markets", curtainAccent: "#7A4FD9", displayAccent: "#A988F5", variant: "candlestick",      Icon: LineChart },
   { vol: "VOL.02", title: "Real Estate",      emphasis: "infrastructure for the overflow", meta: "ADAPTIVE-REUSE · STORAGE",        href: "/real-estate",     curtainAccent: "#8C6A2A", displayAccent: "#E5A52B", variant: "rolling-door",     Icon: Building2 },
   { vol: "VOL.03", title: "Education",        emphasis: "the new architecture of learning", meta: "K-20 · DECENTRALIZED",           href: "/education",       curtainAccent: "#4A1A24", displayAccent: "#E64A58", variant: "chalkboard",       Icon: GraduationCap },
   { vol: "VOL.04", title: "Healthcare",       emphasis: "the parallel health economy",     meta: "NEURO · FUNCTIONAL · DTC",       href: "/healthcare",      curtainAccent: "#244B4F", displayAccent: "#5BB8C0", variant: "ekg-monitor",      Icon: Activity },
@@ -196,7 +196,6 @@ export default function HomePage() {
             <span className="ledger-dot h-1.5 w-1.5 rounded-full bg-purple-2" />
             <span>{dateline || " "}</span>
             <span className="h-px flex-1 bg-gradient-to-r from-purple-2/40 via-paper/10 to-transparent" />
-            <span className="text-paper/45">Operators since 2017</span>
           </motion.div>
 
           <motion.h1
@@ -276,9 +275,11 @@ export default function HomePage() {
                       — {s.emphasis}
                     </span>
                   </div>
-                  <div className="mt-2 font-mono text-[9px] uppercase tracking-[0.25em] text-paper/40">
-                    {s.meta}
-                  </div>
+                  {s.meta && (
+                    <div className="mt-2 font-mono text-[9px] uppercase tracking-[0.25em] text-paper/40">
+                      {s.meta}
+                    </div>
+                  )}
                 </div>
 
                 {/* right: open affordance */}

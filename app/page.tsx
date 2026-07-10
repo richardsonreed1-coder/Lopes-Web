@@ -185,11 +185,14 @@ export default function HomePage() {
 
           <motion.p
             style={revealDelay(3)}
-            className={`${REVEAL_BASE} ${revealState} mt-9 max-w-[56ch] font-sans text-[16px] leading-[1.65] text-paper-dim md:text-[18px]`}
+            className={`${REVEAL_BASE} ${revealState} mt-9 max-w-[62ch] font-sans text-[16px] leading-[1.65] text-paper-dim md:text-[18px]`}
           >
-            A Scottsdale multi-family office. Operator-built, capital-deployed —
-            direct positions and operational weight across five domains, written
-            down one volume at a time.
+            Lopes Capital is a multi-family office (MFO) in Scottsdale, Arizona,
+            founded in 2017 by Brent and Chris Richardson after a 14-year run
+            scaling Grand Canyon University. The firm deploys principal capital
+            across five domains — capital markets, real estate, education,
+            healthcare, and media &amp; consumer — building and backing the
+            operators and infrastructure behind each.
           </motion.p>
         </header>
 

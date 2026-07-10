@@ -18,24 +18,6 @@ import { MistBackground, type FogPalette } from "@/components/mist-background";
 import { CurtainLink, type CurtainVariant } from "@/components/curtain-link";
 import { BootOverlay } from "@/components/boot-overlay";
 
-// ---------------------------------------------------------------
-// Date eyebrow (Roman numerals) — rendered client-side after mount.
-// ---------------------------------------------------------------
-function toRoman(n: number): string {
-  const map: [number, string][] = [
-    [1000, "M"], [900, "CM"], [500, "D"], [400, "CD"],
-    [100, "C"], [90, "XC"], [50, "L"], [40, "XL"],
-    [10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"],
-  ];
-  let out = "";
-  let r = n;
-  for (const [v, s] of map) {
-    while (r >= v) { out += s; r -= v; }
-  }
-  return out;
-}
-const MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-
 // Obsidian fog — near-black base, electric violet accent.
 const OBSIDIAN_FOG: FogPalette = {
   base: [0.022, 0.025, 0.035],
@@ -111,7 +93,6 @@ const PORTALS = [
 }[];
 
 export default function HomePage() {
-  const [dateline, setDateline] = useState("");
   const [reduced, setReduced] = useState(false);
   const [revealed, setRevealed] = useState(false);
   const [firstBoot, setFirstBoot] = useState(false);
@@ -121,9 +102,6 @@ export default function HomePage() {
      that must run post-mount to stay hydration-safe on this SSR-prerendered route.
      The single mount-time state sync is deliberate, not a cascading-render bug. */
   useEffect(() => {
-    const now = new Date();
-    setDateline(`${toRoman(now.getDate())} · ${MONTHS[now.getMonth()]} · ${toRoman(now.getFullYear())}`);
-
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     setReduced(prefersReduced);
 
@@ -189,12 +167,10 @@ export default function HomePage() {
         {/* HERO — the thesis is the hero */}
         <header className="mb-16 md:mb-24">
           <motion.div
-            suppressHydrationWarning
             style={revealDelay(1)}
             className={`${REVEAL_BASE} ${revealState} flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.3em] text-purple-2`}
           >
             <span className="ledger-dot h-1.5 w-1.5 rounded-full bg-purple-2" />
-            <span>{dateline || " "}</span>
             <span className="h-px flex-1 bg-gradient-to-r from-purple-2/40 via-paper/10 to-transparent" />
           </motion.div>
 

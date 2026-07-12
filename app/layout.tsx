@@ -29,9 +29,9 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Lopes Capital — Operators since 2017",
+  title: "Lopes Capital — Operating since 2017",
   description:
-    "A Scottsdale multi-family office. Operator-built. Capital-deployed. Direct investments and operational support across capital markets, real estate, education, healthcare, and media.",
+    "Lopes Capital is a multi-family office in Scottsdale, Arizona, deploying principal capital across capital markets, real estate, education, healthcare, and media & consumer.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

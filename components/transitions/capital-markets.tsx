@@ -97,7 +97,7 @@ export function CandlestickCurtain({ phase, coverMs, uncoverMs }: Props) {
           className="mt-4 font-display text-[clamp(40px,6vw,84px)] font-medium italic leading-none text-paper"
           style={{ textShadow: "0 0 40px rgba(122,79,217,0.35)" }}
         >
-          Pricing the distortion.
+          The public domain.
         </div>
       </div>
 
@@ -371,7 +371,7 @@ export function OrderBookCollisionCurtain({ phase, coverMs, uncoverMs }: Props) 
             VOL. I · CAPITAL MARKETS
           </div>
           <div className="mt-4 font-display text-[clamp(40px,6vw,80px)] font-medium italic leading-none text-paper">
-            Pricing the distortion.
+            The public domain.
           </div>
           <div className="mt-4 font-mono text-[10px] uppercase tracking-[0.4em] text-paper/45">
             Spread crossed · {new Date().toISOString().slice(11, 19)}

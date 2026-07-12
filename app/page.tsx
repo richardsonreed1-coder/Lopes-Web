@@ -18,24 +18,6 @@ import { MistBackground, type FogPalette } from "@/components/mist-background";
 import { CurtainLink, type CurtainVariant } from "@/components/curtain-link";
 import { BootOverlay } from "@/components/boot-overlay";
 
-// ---------------------------------------------------------------
-// Date eyebrow (Roman numerals) — rendered client-side after mount.
-// ---------------------------------------------------------------
-function toRoman(n: number): string {
-  const map: [number, string][] = [
-    [1000, "M"], [900, "CM"], [500, "D"], [400, "CD"],
-    [100, "C"], [90, "XC"], [50, "L"], [40, "XL"],
-    [10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"],
-  ];
-  let out = "";
-  let r = n;
-  for (const [v, s] of map) {
-    while (r >= v) { out += s; r -= v; }
-  }
-  return out;
-}
-const MONTHS = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
-
 // Obsidian fog — near-black base, electric violet accent.
 const OBSIDIAN_FOG: FogPalette = {
   base: [0.022, 0.025, 0.035],
@@ -76,7 +58,7 @@ type Sector = {
 };
 
 const SECTORS: Sector[] = [
-  { vol: "VOL.01", title: "Capital Markets",  emphasis: "pricing the distortion",          meta: "QUANT · FUNDAMENTAL · ALT-DATA", href: "/capital-markets", curtainAccent: "#7A4FD9", displayAccent: "#A988F5", variant: "candlestick",      Icon: LineChart },
+  { vol: "VOL.01", title: "Capital Markets",  emphasis: "the public domain",               meta: "", href: "/capital-markets", curtainAccent: "#7A4FD9", displayAccent: "#A988F5", variant: "candlestick",      Icon: LineChart },
   { vol: "VOL.02", title: "Real Estate",      emphasis: "infrastructure for the overflow", meta: "ADAPTIVE-REUSE · STORAGE",        href: "/real-estate",     curtainAccent: "#8C6A2A", displayAccent: "#E5A52B", variant: "rolling-door",     Icon: Building2 },
   { vol: "VOL.03", title: "Education",        emphasis: "the new architecture of learning", meta: "K-20 · DECENTRALIZED",           href: "/education",       curtainAccent: "#4A1A24", displayAccent: "#E64A58", variant: "chalkboard",       Icon: GraduationCap },
   { vol: "VOL.04", title: "Healthcare",       emphasis: "the parallel health economy",     meta: "NEURO · FUNCTIONAL · DTC",       href: "/healthcare",      curtainAccent: "#244B4F", displayAccent: "#5BB8C0", variant: "ekg-monitor",      Icon: Activity },
@@ -87,14 +69,14 @@ const PRINCIPLES = [
   { code: "PR.I",   label: "Discover", blurb: "signal becomes thesis",   href: "/discover", accent: "#5028A0" },
   { code: "PR.II",  label: "Develop",  blurb: "capital becomes operation", href: "/develop",  accent: "#6E2E18" },
   { code: "PR.III", label: "Deliver",  blurb: "work becomes outcome",     href: "/deliver",  accent: "#8C6A2A" },
-  { code: "PR.IV",  label: "Disrupt",  blurb: "comfortable becomes contested", href: "/discover", accent: "#5028A0" },
+  { code: "PR.IV",  label: "Disrupt",  blurb: "comfortable becomes contested", href: "/disrupt", accent: "#5028A0" },
 ];
 
 const PILLAR_NAV = [
   { label: "Discover", href: "/discover", accent: "#5028A0" },
   { label: "Develop",  href: "/develop",  accent: "#6E2E18" },
   { label: "Deliver",  href: "/deliver",  accent: "#8C6A2A" },
-  { label: "Disrupt",  href: "/discover", accent: "#5028A0" },
+  { label: "Disrupt",  href: "/disrupt", accent: "#5028A0" },
 ];
 
 // Entry portals — talent (internship + job applications) and inbound deal flow.
@@ -111,7 +93,6 @@ const PORTALS = [
 }[];
 
 export default function HomePage() {
-  const [dateline, setDateline] = useState("");
   const [reduced, setReduced] = useState(false);
   const [revealed, setRevealed] = useState(false);
   const [firstBoot, setFirstBoot] = useState(false);
@@ -121,9 +102,6 @@ export default function HomePage() {
      that must run post-mount to stay hydration-safe on this SSR-prerendered route.
      The single mount-time state sync is deliberate, not a cascading-render bug. */
   useEffect(() => {
-    const now = new Date();
-    setDateline(`${toRoman(now.getDate())} · ${MONTHS[now.getMonth()]} · ${toRoman(now.getFullYear())}`);
-
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     setReduced(prefersReduced);
 
@@ -189,14 +167,11 @@ export default function HomePage() {
         {/* HERO — the thesis is the hero */}
         <header className="mb-16 md:mb-24">
           <motion.div
-            suppressHydrationWarning
             style={revealDelay(1)}
             className={`${REVEAL_BASE} ${revealState} flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.3em] text-purple-2`}
           >
             <span className="ledger-dot h-1.5 w-1.5 rounded-full bg-purple-2" />
-            <span>{dateline || " "}</span>
             <span className="h-px flex-1 bg-gradient-to-r from-purple-2/40 via-paper/10 to-transparent" />
-            <span className="text-paper/45">Operators since 2017</span>
           </motion.div>
 
           <motion.h1
@@ -210,11 +185,14 @@ export default function HomePage() {
 
           <motion.p
             style={revealDelay(3)}
-            className={`${REVEAL_BASE} ${revealState} mt-9 max-w-[56ch] font-sans text-[16px] leading-[1.65] text-paper-dim md:text-[18px]`}
+            className={`${REVEAL_BASE} ${revealState} mt-9 max-w-[62ch] font-sans text-[16px] leading-[1.65] text-paper-dim md:text-[18px]`}
           >
-            A Scottsdale multi-family office. Operator-built, capital-deployed —
-            direct positions and operational weight across five domains, written
-            down one volume at a time.
+            Lopes Capital is a multi-family office (MFO) in Scottsdale, Arizona,
+            founded in 2017 by Brent and Chris Richardson after a 14-year run
+            scaling Grand Canyon University. The firm deploys principal capital
+            across five domains — capital markets, real estate, education,
+            healthcare, and media &amp; consumer — building and backing the
+            operators and infrastructure behind each.
           </motion.p>
         </header>
 
@@ -276,9 +254,11 @@ export default function HomePage() {
                       — {s.emphasis}
                     </span>
                   </div>
-                  <div className="mt-2 font-mono text-[9px] uppercase tracking-[0.25em] text-paper/40">
-                    {s.meta}
-                  </div>
+                  {s.meta && (
+                    <div className="mt-2 font-mono text-[9px] uppercase tracking-[0.25em] text-paper/40">
+                      {s.meta}
+                    </div>
+                  )}
                 </div>
 
                 {/* right: open affordance */}
@@ -393,9 +373,8 @@ export default function HomePage() {
         >
           <div className="h-px bg-gradient-to-r from-transparent via-paper/15 to-transparent" />
           <div className="flex flex-col items-start justify-between gap-3 pt-6 font-mono text-[10px] uppercase tracking-[0.25em] text-paper/45 md:flex-row md:items-center">
-            <span>Lopes Capital <span className="text-purple-2/60">·</span> Operators since 2017</span>
+            <span>Lopes Capital <span className="text-purple-2/60">·</span> Operating since 2017</span>
             <span>Scottsdale <span className="text-purple-2/60">·</span> Arizona</span>
-            <span>Obsidian <span className="text-purple-2/60">·</span> Vol. IX</span>
           </div>
         </motion.footer>
       </motion.div>

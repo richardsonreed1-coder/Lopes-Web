@@ -124,35 +124,35 @@ export const ledgers: Ledger[] = [
     href: "/real-estate",
     title: "Real Estate",
     emphasis: "infrastructure for the overflow",
-    meta: "ADAPTIVE-REUSE · STORAGE",
+    meta: "",
     body:
-      "We buy functionally obsolete commercial buildings well below replacement cost and convert them into climate-controlled self-storage — held indefinitely, refinanced into permanent debt.",
+      "Lopes Capital invests in real estate as long-duration, cash-flowing hard assets across a select set of sectors, with a current focus on self-storage.",
     thesis:
-      "As housing affordability worsens and residential square footage shrinks, the consumer addiction to accumulation remains absolute. This creates a permanent, structural overflow. Exceptional real estate returns no longer reside in generic multifamily yields, but in the resilient, high-margin infrastructure required to warehouse what people cannot afford to house but refuse to part with.",
+      "We invest in real estate as long-duration, cash-flowing hard assets — bought on basis, held for the long term, and concentrated in a select set of sectors.",
     strategy:
-      "We acquire functionally obsolete retail and commercial buildings well below replacement cost, converting them into climate-controlled self-storage operated by CubeSmart. Our edge is structural: an unrecreatable cost basis, faster stabilization than ground-up development, and regulatory moats in zoning-restricted submarkets. We hold indefinitely, refinancing into permanent debt to compound the playbook across the Sunbelt.",
+      "Our current focus is self-storage. We spent 2026 building and pressure-testing the model, closed on our first site in May, and are operating it now. We plan to launch and raise the Lopes Storage Fund in Q4 2026 / Q1 2027.",
     investments:
-      "Adaptive-reuse self-storage, obsolete commercial conversions, and inflation-resilient, low-operational-drag hard assets.",
+      "Self-storage, and select cash-flowing hard assets across the sectors we underwrite.",
     positions: [
-      {
-        label: "Adaptive-reuse",
-        description:
-          "Functionally obsolete commercial buildings, acquired below replacement cost, converted to climate-controlled storage.",
-      },
       {
         label: "Self-storage",
         description:
-          "CubeSmart-operated, climate-controlled. Faster stabilization than ground-up; regulatory moats in zoning-restricted submarkets.",
+          "We build and operate climate-controlled self-storage through national operators — our current area of active focus, and the basis for the Lopes Storage Fund.",
       },
       {
-        label: "Conversions",
+        label: "Strategic Land & Development",
         description:
-          "Retail and commercial structures retrofitted. The cost basis isn't recreatable.",
+          "We invest in strategically located land where infrastructure, population growth, utility demand, and institutional development create opportunities for long-term appreciation and value creation.",
       },
       {
-        label: "Sunbelt",
+        label: "Tax-Advantaged Real Estate",
         description:
-          "Permanent debt, indefinite hold, compounding playbook across high-migration corridors.",
+          "We pursue real estate investments that combine attractive underlying fundamentals with meaningful tax advantages, including properties located within designated Opportunity Zones and other incentive-driven markets.",
+      },
+      {
+        label: "Distressed & Adaptive Reuse",
+        description:
+          "We invest in distressed, underutilized, and obsolete real estate where operational challenges, capital constraints, or changing market needs create opportunities to acquire assets below their long-term potential.",
       },
     ],
     color: "gold",
@@ -167,16 +167,10 @@ export const ledgers: Ledger[] = [
       brightness: 1.3,
     },
     stats: [
-      { label: "Sleeves", value: "04" },
-      { label: "First deal", value: "2019" },
-      { label: "Sunbelt expansion", value: "2023" },
-      { label: "Portfolio status", value: "Live" },
-    ],
-    timeline: [
-      { year: "2019", note: "First storage acquisition" },
-      { year: "2021", note: "Martone datacenter partnership" },
-      { year: "2023", note: "Land portfolio assembled" },
-      { year: "2025", note: "Operator-led roll-up underway" },
+      { label: "Current focus", value: "Storage" },
+      { label: "First site", value: "May 2026" },
+      { label: "Vehicle", value: "Storage Fund" },
+      { label: "Target raise", value: "Q4 2026" },
     ],
   },
   {
@@ -294,12 +288,6 @@ export const ledgers: Ledger[] = [
       { label: "First clinical", value: "2023" },
       { label: "At scale", value: "2025" },
     ],
-    timeline: [
-      { year: "2022", note: "Neuro brand hub formed" },
-      { year: "2023", note: "First clinical sub-property launched" },
-      { year: "2024", note: "DTC acquisition funnel live" },
-      { year: "2025", note: "Hub and spokes at scale" },
-    ],
   },
   {
     vol: "VOL.05",
@@ -355,27 +343,6 @@ export const ledgers: Ledger[] = [
       { label: "Stack built", value: "2024" },
       { label: "Reusable", value: "2026" },
     ],
-    timeline: [
-      { year: "2024", note: "Creator DTC holdco formed" },
-      { year: "2024", note: "Shared e-commerce stack built" },
-      { year: "2025", note: "First three properties operating" },
-      { year: "2026", note: "Content infrastructure reusable" },
-    ],
-  },
-  {
-    vol: "VOL.06",
-    slug: "letters",
-    href: "/#letters",
-    title: "Letters",
-    emphasis: "annual notes, on the record",
-    meta: "2018 — 2025",
-    body:
-      "Every year, one letter, signed. Theses, mistakes, and what we did about both. The archive lives below.",
-    positions: [
-      { label: "2018" }, { label: "2019" }, { label: "2020" }, { label: "2021" },
-      { label: "2022" }, { label: "2023" }, { label: "2024" }, { label: "2025" },
-    ],
-    color: "paper",
   },
 ];
 
@@ -394,62 +361,6 @@ const CATEGORY_TITLE_TO_SLUG: Record<string, CategorySlug> = {
 export function operatorsForCategory(slug: CategorySlug): Operator[] {
   return operators.filter((op) => CATEGORY_TITLE_TO_SLUG[op.category] === slug);
 }
-
-export type Letter = {
-  year: string;
-  title: string;
-  emphasis?: string;
-  length: string;
-};
-
-export const letters: Letter[] = [
-  {
-    year: "2025",
-    title: "Storage at scale:",
-    emphasis: "what the consolidators got right, and where they're still vulnerable",
-    length: "14 MIN",
-  },
-  {
-    year: "2024",
-    title: "Operator economics:",
-    emphasis: "why we're underwriting management teams, not assets",
-    length: "11 MIN",
-  },
-  {
-    year: "2023",
-    title: "The neuro thesis:",
-    emphasis: "a DTC funnel, a clinical spine, and the patience to wait",
-    length: "19 MIN",
-  },
-  {
-    year: "2022",
-    title: "A datacenter is a real-estate trade with a power-grid covenant",
-    length: "9 MIN",
-  },
-  {
-    year: "2021",
-    title: "Three things we got wrong in 2020 —",
-    emphasis: "and the call that paid for all of them",
-    length: "12 MIN",
-  },
-  {
-    year: "2020",
-    title: "Recession-resistant cash flow:",
-    emphasis: "self-storage as a defensive growth asset",
-    length: "16 MIN",
-  },
-  {
-    year: "2019",
-    title: "Year one:",
-    emphasis: "what a family office actually does when nobody's watching",
-    length: "8 MIN",
-  },
-  {
-    year: "2018",
-    title: "After the exit",
-    length: "6 MIN",
-  },
-];
 
 export const epochs = [
   { year: "2003", label: "Grand Canyon University acquired" },
@@ -483,19 +394,19 @@ export const pillars: Pillar[] = [
     word: "Discover",
     emphasis: "Where signal becomes thesis.",
     body:
-      "We don't chase deals. We develop convictions in public — letters, theses, signals — and let the deals find us. Research isn't a department here; it's the posture we operate from.",
+      "We don't chase deals. We develop convictions in public — theses, signals, positions — and let the deals find us. Research isn't a department here; it's the posture we operate from.",
     principles: [
       {
         label: "01",
         title: "Research as posture",
         body:
-          "Every letter, every position, every conversation is a read on the world we're trying to act in. We don't outsource the thinking that drives our capital.",
+          "Every thesis, every position, every conversation is a read on the world we're trying to act in. We don't outsource the thinking that drives our capital.",
       },
       {
         label: "02",
         title: "Theses in public",
         body:
-          "We publish what we believe, what we've changed our mind on, and why. The 2018–2025 letter archive is the audit trail — and the filter.",
+          "We publish what we believe, what we've changed our mind on, and why. The written record is the audit trail — and the filter.",
       },
       {
         label: "03",
@@ -555,9 +466,9 @@ export const pillars: Pillar[] = [
       },
       {
         label: "03",
-        title: "The letter at the end",
+        title: "The write-up at the end",
         body:
-          "Every realized position gets a write-up: what worked, what didn't, what we'd do differently. The archive grows. So does the discipline.",
+          "Every realized position gets a write-up: what worked, what didn't, what we'd do differently. The record grows. So does the discipline.",
       },
     ],
   },
@@ -573,7 +484,7 @@ export const pillars: Pillar[] = [
         label: "01",
         title: "Where the room is small",
         body:
-          "We size up where the consensus is thin. Self-storage in 2017. Datacenter real estate in 2021. Neurodevelopmental care in 2022.",
+          "We size up where the consensus is thin — into sectors while they're still contested and underpriced, and small enough to move before the room fills.",
       },
       {
         label: "02",
@@ -585,7 +496,7 @@ export const pillars: Pillar[] = [
         label: "03",
         title: "What we're wrong about",
         body:
-          "We say it out loud. The annual letter has a section for it, and most of the lessons we trade on came from there.",
+          "We say it out loud. Every miss gets written down, and most of the lessons we trade on came from there.",
       },
     ],
   },
@@ -599,9 +510,9 @@ export function pillarBySlug(slug: string): Pillar | undefined {
 
 export const operators: Operator[] = [
   { num: "#001", name: "Grand Canyon University", category: "Education", era: "2003 — 2018" },
-  { num: "#017", name: "Self-Storage Portfolio", category: "Real Estate", era: "2019 —" },
-  { num: "#023", name: "Neuro Brand Hub", category: "Healthcare", era: "2022 —" },
-  { num: "#028", name: "K-20 Platform", category: "Education", era: "2023 —" },
-  { num: "#031", name: "Family Advisory", category: "Education", era: "2024 —" },
-  { num: "#034", name: "Creator DTC Holdco", category: "Media & Consumer", era: "2024 —" },
+  { num: "#023", name: "Neurosage", category: "Healthcare", era: "2025 —" },
+  { num: "#036", name: "NeuroHome", category: "Healthcare", era: "2026 —" },
+  { num: "#028", name: "Woz Ed", category: "Education", era: "2018 —" },
+  { num: "#031", name: "AEIOS", category: "Education", era: "2026 —" },
+  { num: "#034", name: "Dockies Media Group", category: "Media & Consumer", era: "2025 —" },
 ];

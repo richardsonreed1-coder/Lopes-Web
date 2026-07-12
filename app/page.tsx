@@ -69,14 +69,14 @@ const PRINCIPLES = [
   { code: "PR.I",   label: "Discover", blurb: "signal becomes thesis",   href: "/discover", accent: "#5028A0" },
   { code: "PR.II",  label: "Develop",  blurb: "capital becomes operation", href: "/develop",  accent: "#6E2E18" },
   { code: "PR.III", label: "Deliver",  blurb: "work becomes outcome",     href: "/deliver",  accent: "#8C6A2A" },
-  { code: "PR.IV",  label: "Disrupt",  blurb: "comfortable becomes contested", href: "/discover", accent: "#5028A0" },
+  { code: "PR.IV",  label: "Disrupt",  blurb: "comfortable becomes contested", href: "/disrupt", accent: "#5028A0" },
 ];
 
 const PILLAR_NAV = [
   { label: "Discover", href: "/discover", accent: "#5028A0" },
   { label: "Develop",  href: "/develop",  accent: "#6E2E18" },
   { label: "Deliver",  href: "/deliver",  accent: "#8C6A2A" },
-  { label: "Disrupt",  href: "/discover", accent: "#5028A0" },
+  { label: "Disrupt",  href: "/disrupt", accent: "#5028A0" },
 ];
 
 // Entry portals — talent (internship + job applications) and inbound deal flow.
@@ -373,9 +373,8 @@ export default function HomePage() {
         >
           <div className="h-px bg-gradient-to-r from-transparent via-paper/15 to-transparent" />
           <div className="flex flex-col items-start justify-between gap-3 pt-6 font-mono text-[10px] uppercase tracking-[0.25em] text-paper/45 md:flex-row md:items-center">
-            <span>Lopes Capital <span className="text-purple-2/60">·</span> Operators since 2017</span>
+            <span>Lopes Capital <span className="text-purple-2/60">·</span> Operating since 2017</span>
             <span>Scottsdale <span className="text-purple-2/60">·</span> Arizona</span>
-            <span>Obsidian <span className="text-purple-2/60">·</span> Vol. IX</span>
           </div>
         </motion.footer>
       </motion.div>

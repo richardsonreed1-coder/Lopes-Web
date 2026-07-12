@@ -113,7 +113,7 @@ export function BootOverlay({ onComplete }: { onComplete: () => void }) {
         </div>
 
         <div className="mt-5 font-mono text-[9px] uppercase tracking-[0.4em] text-paper/45">
-          Obsidian · Vol. IX
+          Scottsdale · Arizona
         </div>
       </motion.div>
     </motion.div>
